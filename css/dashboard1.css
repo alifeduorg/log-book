@@ -1,0 +1,157 @@
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+nav.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+nav.sidebar .logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+nav.sidebar .logo img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+nav.sidebar h2 {
+    font-size: 24px;
+    margin-top: 0;
+}
+
+nav.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav.sidebar ul li {
+    margin: 15px 0;
+}
+
+nav.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+nav.sidebar ul li a:hover {
+    background-color: #34495e;
+}
+
+/* Main Content */
+main.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    transition: margin-left 0.3s ease;
+}
+
+header.topbar {
+    background-color: #f39c12;
+    padding: 20px;
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+header.topbar h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+header.topbar p {
+    margin: 0;
+    font-size: 18px;
+}
+
+section.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.card p {
+    color: #7f8c8d;
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+    nav.sidebar {
+        width: 200px;
+    }
+
+    main.main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    section.cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    nav.sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+    }
+
+    main.main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    section.cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 15px;
+    }
+    
+    header.topbar h1 {
+        font-size: 24px;
+    }
+
+    header.topbar p {
+        font-size: 14px;
+    }
+}
