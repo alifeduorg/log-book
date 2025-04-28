@@ -169,16 +169,10 @@
 </footer>
 
    <script>
-    // The JavaScript function to handle the form submission
-   document.getElementById('logbookForm').addEventListener('submit', function (e) {
-  e.preventDefault();  // Prevent the default form submission behavior
-
-  const uploadWorkElement = document.getElementById('upload_work');
-  
-  // Ensure the element exists and that it has files selected
-  const uploadWorkFileName = uploadWorkElement && uploadWorkElement.files && uploadWorkElement.files.length > 0 
-    ? uploadWorkElement.files[0].name 
-    : '';
+    //hi The JavaScript function to handle the form submission
+   // Submit the form data
+document.getElementById('logbookForm').addEventListener('submit', function (e) {
+  e.preventDefault();  // Prevent default form submission behavior
 
   const formData = {
     date: document.getElementById('date').value,
@@ -194,31 +188,31 @@
     student_engagement: document.getElementById('student_engagement').value,
     homework_given: document.getElementById('homework_given').value,
     work_type: document.getElementById('work_type').value,
-    upload_work: uploadWorkFileName, // Use the safe file name
+    upload_work: document.getElementById('upload_work').value, // This may be file name or message, depending on your form
     share_moments: document.getElementById('share_moments').value
   };
 
-  // hi Send the data to Google Apps Script
- fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {  // Use the URL you got from Google Apps Script deployment
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(formData)
-})
-.then(response => response.json())
-.then(data => {
-  if (data.result === 'success') {
-    alert('Logbook submitted successfully!');
-  } else {
-    alert('Error: ' + data.message);
-  }
-})
-.catch(error => {
-  console.error('Error occurred:', error);  // More detailed error logs
-  alert('Fetch error: ' + error.message);  // Show the error message
+  // Send the data to Google Apps Script using Fetch
+  fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.result === 'success') {
+      alert('Logbook submitted successfully!');
+    } else {
+      alert('Error: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error occurred:', error);  // More detailed error logs
+    alert('Fetch error: ' + error.message);  // Show the error message
+  });
 });
-
   </script>
 </body>
 </html>
