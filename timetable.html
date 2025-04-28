@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Timetable - ALIF ERP</title>
+    <title>Timetable</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,34 +11,24 @@
             margin: 0;
             padding: 0;
         }
-        .sidebar {
-            width: 250px;
+        .header {
             background-color: #4CAF50;
             color: white;
-            height: 100vh;
-            padding-top: 20px;
-            position: fixed;
-            left: 0;
-            top: 0;
-        }
-        .sidebar h2 {
-            text-align: center;
-        }
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-        .sidebar ul li:hover {
-            background-color: #45a049;
-        }
-        .main-content {
-            margin-left: 250px;
             padding: 20px;
+            text-align: center;
+        }
+        .back-btn {
+            display: block;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-btn:hover {
+            background-color: #45a049;
         }
         table {
             width: 100%;
@@ -46,11 +36,11 @@
             margin-top: 20px;
         }
         table, th, td {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
         }
         th, td {
-            padding: 10px;
-            text-align: center;
+            padding: 12px;
+            text-align: left;
         }
         th {
             background-color: #4CAF50;
@@ -60,66 +50,64 @@
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>ALIF ERP</h2>
-    <ul>
-        <li><a href="timetable.html">Timetable</a></li>
-        <li><a href="logbook.html">Logbook</a></li>
-        <li><a href="attendance.html">Attendance</a></li>
-        <li><a href="salary.html">Salary</a></li>
-        <li><a href="events.html">Upcoming Events</a></li>
-        <li><a href="index.html">Logout</a></li>
-    </ul>
+<div class="header">
+    <h1>Your Timetable</h1>
 </div>
 
-<div class="main-content">
-    <h1>Teacher Timetable</h1>
-    
-    <table id="timetable">
+<!-- Timetable Table -->
+<div class="timetable">
+    <table id="timetable-table">
         <thead>
             <tr>
                 <th>Day</th>
                 <th>Class</th>
-                <th>Subject</th>
                 <th>Time</th>
+                <th>Subject</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Timetable data will be dynamically added here -->
+            <!-- Data will be populated here by JavaScript -->
         </tbody>
     </table>
 </div>
 
-<script>
-    const spreadsheetID = 'https://script.google.com/macros/s/AKfycbwI8iMUa3OXO2bseDn8wfjj4RSkHMXAG97179bP0twY8mfab0bm-YGuu70niRslop45fA/exec';  // Replace with your Google Sheets ID
-    const sheetName = 'Timetable';  // Replace with your sheet name (tab name)
+<!-- Back Button -->
+<a href="dashboard.html" class="back-btn">Back to Dashboard</a>
 
-    // Function to fetch data from Google Sheets
-    function fetchTimetableData() {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}/values/${sheetName}?key=YOUR_API_KEY`;  // Replace YOUR_API_KEY with your Google API key
-        
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const timetable = data.values;
-                const tableBody = document.querySelector('#timetable tbody');
-                // Skip the header row and add the data rows
-                timetable.slice(1).forEach(row => {
-                    const newRow = document.createElement('tr');
-                    newRow.innerHTML = `
-                        <td>${row[0]}</td>
-                        <td>${row[1]}</td>
-                        <td>${row[2]}</td>
-                        <td>${row[3]}</td>
-                    `;
-                    tableBody.appendChild(newRow);
-                });
-            })
-            .catch(error => console.error('Error fetching timetable data:', error));
+<script>
+    // Google Sheets Data URL (replace with your own Google Sheet ID and Sheet number)
+    const sheetURL = 'https://spreadsheets.google.com/feeds/list/[your_spreadsheet_id]/[your_sheet_number]/public/values?alt=json';
+
+    // Function to fetch data from Google Sheets and display it
+    async function fetchTimetable() {
+        try {
+            const response = await fetch(sheetURL);
+            const data = await response.json();
+            const entries = data.feed.entry;
+            
+            const timetableTable = document.getElementById("timetable-table").getElementsByTagName('tbody')[0];
+            
+            entries.forEach(entry => {
+                // Extracting values from Google Sheets
+                const day = entry.gsx$day.$t; // Day of the week (e.g., Monday)
+                const className = entry.gsx$class.$t; // Class Name (e.g., Math 101)
+                const time = entry.gsx$time.$t; // Class time (e.g., 9:00 AM - 10:30 AM)
+                const subject = entry.gsx$subject.$t; // Subject (e.g., Algebra)
+
+                // Adding rows to the timetable
+                const row = timetableTable.insertRow();
+                row.insertCell(0).textContent = day;
+                row.insertCell(1).textContent = className;
+                row.insertCell(2).textContent = time;
+                row.insertCell(3).textContent = subject;
+            });
+        } catch (error) {
+            console.error("Error fetching timetable data: ", error);
+        }
     }
 
-    // Fetch and display timetable data when the page loads
-    window.onload = fetchTimetableData;
+    // Call the function to fetch and display timetable data when the page loads
+    window.onload = fetchTimetable;
 </script>
 
 </body>
