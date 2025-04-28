@@ -2,270 +2,198 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logbook Submission</title>
+  <title>Teacher Logbook - Alif Edu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #001f3d; /* Navy blue background */
       margin: 0;
       padding: 0;
+      background: #001F3F; /* Navy Blue */
+      font-family: 'Poppins', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      box-sizing: border-box;
+      min-height: 100vh;
+      flex-direction: column;
     }
 
-    .logbook-container {
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      padding: 15px;
-      width: 90%; /* Reduced width */
-      max-width: 450px; /* Limiting max-width */
-      text-align: center;
-      overflow-y: auto;
-      height: 90vh; /* Allow scroll on larger screens */
-      box-sizing: border-box;
-      position: relative;
+    .logbook-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 700px;
+      margin-bottom: 80px;
     }
 
     h2 {
-      color: #f1c40f; /* Golden Yellow color */
-      font-size: 22px;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      color: #001F3F;
+      margin-bottom: 20px;
+      font-size: 28px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
 
-    .form-group {
-      margin-bottom: 12px;
-      text-align: left;
+    form {
+      display: flex;
+      flex-direction: column;
     }
 
     label {
+      margin-top: 15px;
+      font-weight: 600;
+      color: #001F3F;
       font-size: 14px;
-      margin-bottom: 5px;
-      color: #333;
-      font-weight: bold;
     }
 
     input, select, textarea {
-      width: 100%;
-      padding: 8px;
       margin-top: 5px;
+      padding: 10px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-
-    button {
-      padding: 10px 15px;
-      background-color: #f1c40f;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      border-radius: 10px;
       font-size: 14px;
       width: 100%;
-      margin-top: 15px;
+      background: #f9f9f9;
     }
 
-    button:hover {
-      background-color: #e67e22;
-    }
-
-    .back-button {
-      padding: 8px 15px;
-      background-color: #34495e;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 15px;
-      text-decoration: none;
-    }
-
-    .back-button:hover {
-      background-color: #2c3e50;
-    }
-
-    .form-group textarea {
+    textarea {
       resize: vertical;
       min-height: 80px;
     }
 
-    .footer {
-      text-align: center;
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
       margin-top: 20px;
-      font-size: 12px;
-      color: white;
-      position: absolute;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #FFC300; /* Golden Yellow */
+      color: #001F3F;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #ffb000;
+    }
+
+    footer {
+      position: fixed;
       bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
       width: 100%;
-    }
-
-    .footer a {
-      color: #f1c40f;
-      text-decoration: none;
-    }
-
-    /* For mobile responsiveness */
-    @media (max-width: 600px) {
-      .logbook-container {
-        width: 95%;
-        max-width: 100%;
-      }
-
-      h2 {
-        font-size: 20px;
-      }
-
-      label {
-        font-size: 12px;
-      }
-
-      input, select, textarea {
-        font-size: 13px;
-      }
-
-      button {
-        font-size: 13px;
-      }
-
-      .back-button {
-        font-size: 13px;
-      }
+      text-align: center;
+      color: white;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
-  <div class="logbook-container">
-    <h2>Logbook Submission</h2>
-    <form id="logbookForm">
-      <div class="form-group">
-        <label for="date">Date</label>
-        <input type="date" id="date" name="date" required>
-      </div>
+<div class="logbook-card">
+  <h2>Teacher Logbook</h2>
+  <form id="logbook-form">
 
-      <div class="form-group">
-        <label for="teacherName">Teacher’s Name</label>
-        <input type="text" id="teacherName" name="teacherName" required>
-      </div>
+    <label>Date:</label>
+    <input type="date" name="date" required>
 
-      <div class="form-group">
-        <label for="staffId">Staff ID</label>
-        <input type="text" id="staffId" name="staffId" required>
-      </div>
+    <label>Teacher’s Name:</label>
+    <input type="text" name="teacher_name" required>
 
-      <div class="form-group">
-        <label for="class">Class</label>
-        <select id="class" name="class" required>
-          <option value="">Select Class</option>
-          <option value="Class 1">Class 1</option>
-          <option value="Class 2">Class 2</option>
-          <option value="Class 3">Class 3</option>
-          <option value="Class 4">Class 4</option>
-        </select>
-      </div>
+    <label>Staff ID:</label>
+    <input type="text" name="staff_id" required>
 
-      <div class="form-group">
-        <label for="subject">Subject</label>
-        <select id="subject" name="subject" required>
-          <option value="">Select Subject</option>
-          <option value="Maths">Maths</option>
-          <option value="Science">Science</option>
-          <option value="English">English</option>
-          <option value="History">History</option>
-        </select>
-      </div>
+    <label>Program:</label>
+    <input type="text" name="program" required>
 
-      <div class="form-group">
-        <label for="time">Class Time</label>
-        <input type="time" id="time" name="time" required>
-      </div>
+    <label>Class:</label>
+    <select name="class" required>
+      <option value="" disabled selected>Select Class</option>
+      <option value="Class A">Class A</option>
+      <option value="Class B">Class B</option>
+      <option value="Class C">Class C</option>
+    </select>
 
-      <div class="form-group">
-        <label for="workType">What Type of Work?</label>
-        <select id="workType" name="workType" required>
-          <option value="">Select Work Type</option>
-          <option value="Assignment">Assignment</option>
-          <option value="Project">Project</option>
-          <option value="Quiz">Quiz</option>
-          <option value="Discussion">Discussion</option>
-        </select>
-      </div>
+    <label>Student Name:</label>
+    <input type="text" name="student_name" required>
 
-      <div class="form-group">
-        <label for="teachingDetails">What did you teach today?</label>
-        <textarea id="teachingDetails" name="teachingDetails" required></textarea>
-      </div>
+    <label>Subjects:</label>
+    <select name="subject" required>
+      <option value="" disabled selected>Select Subject</option>
+      <option value="Maths">Maths</option>
+      <option value="Science">Science</option>
+      <option value="English">English</option>
+    </select>
 
-      <div class="form-group">
-        <label for="studentEngagement">Student Engagement</label>
-        <textarea id="studentEngagement" name="studentEngagement" required></textarea>
-      </div>
+    <label>Class In:</label>
+    <input type="time" name="class_in" required>
 
-      <div class="form-group">
-        <label for="homeworkTasks">Homework/Tasks Given</label>
-        <textarea id="homeworkTasks" name="homeworkTasks" required></textarea>
-      </div>
+    <label>Class Duration:</label>
+    <select name="class_duration" required>
+      <option value="" disabled selected>Select Duration</option>
+      <option value="60 min">60 min</option>
+      <option value="60 + 15">60 + 15</option>
+      <option value="60 + 30">60 + 30</option>
+      <option value="60 + 45">60 + 45</option>
+      <option value="60 + 60">60 + 60</option>
+    </select>
 
-      <div class="form-group">
-        <label for="attachments">Upload Class Screenshot or Student Work</label>
-        <input type="file" id="attachments" name="attachments" accept="image/*, .pdf" />
-      </div>
+    <label>What did you teach today?</label>
+    <textarea name="taught_today" required></textarea>
 
-      <div class="form-group">
-        <label for="additionalNotes">Anything you'd like to share? A proud moment? Funny student reply? Issue faced?</label>
-        <textarea id="additionalNotes" name="additionalNotes" required></textarea>
-      </div>
+    <label>Student Engagement:</label>
+    <textarea name="student_engagement" required></textarea>
 
-      <button type="submit">Submit Logbook</button>
-      <div class="error" id="logbookError"></div>
-      <div class="success" id="logbookSuccess"></div>
-    </form>
+    <label>Homework or Tasks Given?</label>
+    <textarea name="homework_given" required></textarea>
 
-    <a href="dashboard.html" class="back-button">Back to Dashboard</a>
-  </div>
+    <label>What type of Work:</label>
+    <select name="work_type" required>
+      <option value="" disabled selected>Select Work Type</option>
+      <option value="Classwork">Classwork</option>
+      <option value="Homework">Homework</option>
+      <option value="Project">Project</option>
+    </select>
 
-  <div class="footer">
-    <p>Powered by <a href="https://alifedu.com" target="_blank">Alif Edu</a></p>
-  </div>
+    <label>Upload Class Notification Message:</label>
+    <input type="file" name="upload_work">
 
-  <script>
-    document.getElementById("logbookForm").addEventListener("submit", function(event) {
-      event.preventDefault();
+    <label>Anything you'd like to share?</label>
+    <textarea name="share_moments"></textarea>
 
-      var formData = new FormData(this);
+    <div class="btn-group">
+      <button type="submit">Submit</button>
+      <button type="button" onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+    </div>
 
-      fetch("https://script.google.com/macros/s/AKfycbwI8iMUa3OXO2bseDn8wfjj4RSkHMXAG97179bP0twY8mfab0bm-YGuu70niRslop45fA/exec", { // Replace YOUR_SCRIPT_URL with your actual Google Script URL
-        method: "POST",
-        body: formData
+  </form>
+</div>
+
+<footer>
+  Powered by Alif Edu
+</footer>
+
+<script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwI8iMUa3OXO2bseDn8wfjj4RSkHMXAG97179bP0twY8mfab0bm-YGuu70niRslop45fA/exec';
+  const form = document.getElementById('logbook-form');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    fetch(scriptURL, { method: 'POST', body: formData })
+      .then(response => {
+        alert('Logbook submitted successfully!');
+        form.reset();
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "success") {
-          document.getElementById("logbookSuccess").innerText = "Logbook submitted successfully!";
-          document.getElementById("logbookError").innerText = "";
-          document.getElementById("logbookForm").reset();
-        } else {
-          document.getElementById("logbookError").innerText = "There was an error submitting the logbook.";
-          document.getElementById("logbookSuccess").innerText = "";
-        }
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        document.getElementById("logbookError").innerText = "An error occurred, please try again.";
-        document.getElementById("logbookSuccess").innerText = "";
-      });
-    });
-  </script>
+      .catch(error => alert('Error! Please try again.'));
+  });
+</script>
+
 </body>
 </html>
