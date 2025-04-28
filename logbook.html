@@ -187,8 +187,8 @@
         student_engagement: document.getElementById('student_engagement').value,
         homework_given: document.getElementById('homework_given').value,
         work_type: document.getElementById('work_type').value,
-        upload_work: document.getElementById('upload_work').files[0] ? document.getElementById('upload_work').files[0].name : '',
-        share_moments: document.getElementById('share_moments').value
+        upload_work: document.getElementById('upload_work').files.length > 0 ? document.getElementById('upload_work').files[0].name : '',
+    share_moments: document.getElementById('share_moments').value
       };
 
       // Send the data to Google Apps Script
