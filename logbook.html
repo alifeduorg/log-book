@@ -168,22 +168,7 @@
   Powered by Alif Edu
 </footer>
 
-<script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxcw7miU9-2Tw7CYbnvgjx10gVHSjdPs00nOrHhalOzhuZgQWm7BT4PggtL6deiZ0_Exg/exec'; // Replace this
-const form = document.getElementById('logbookForm');
-
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-    .then(response => {
-      alert('Submitted Successfully!');
-      form.reset();
-    })
-    .catch(error => {
-      alert('Error! Please try again.');
-    });
-});
-</script>
+  <script src="logbook.js"></script>
 
 </body>
 </html>
