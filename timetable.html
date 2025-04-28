@@ -1,72 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher Timetable</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* Styles as per the previous design */
-    /* Add your CSS code here as in previous examples */
-
-    /* For better readability, add styles for the timetable grid */
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Timetable - ALIF ERP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #4CAF50;
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .sidebar h2 {
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #45a049;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="text-center">Teacher's Weekly Timetable</h1>
 
-    <div class="timetable" id="timetable"></div>
-  </div>
+<div class="sidebar">
+    <h2>ALIF ERP</h2>
+    <ul>
+        <li><a href="timetable.html">Timetable</a></li>
+        <li><a href="logbook.html">Logbook</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="salary.html">Salary</a></li>
+        <li><a href="events.html">Upcoming Events</a></li>
+        <li><a href="index.html">Logout</a></li>
+    </ul>
+</div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Fetch timetable data from Google Sheets via Apps Script
-      fetch('YOUR_GOOGLE_APPS_SCRIPT_URL') // Replace with the Apps Script URL you deployed
-        .then(response => response.json())
-        .then(data => {
-          const timetableContainer = document.getElementById('timetable');
-          const timetable = {};
+<div class="main-content">
+    <h1>Teacher Timetable</h1>
+    
+    <table id="timetable">
+        <!-- Timetable data will go here -->
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Class</th>
+                <th>Subject</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically filled here -->
+        </tbody>
+    </table>
+</div>
 
-          // Organize data into a structured format (by day)
-          data.forEach(entry => {
-            const { teacher, day, time, subject, room, comments } = entry;
-            if (!timetable[day]) {
-              timetable[day] = [];
-            }
-            timetable[day].push({ teacher, time, subject, room, comments });
-          });
+<script>
+    // Example timetable data (this could be fetched from a Google Sheet or database)
+    const timetableData = [
+        { day: 'Monday', class: 'Math 101', subject: 'Mathematics', time: '10:00 AM - 11:30 AM' },
+        { day: 'Tuesday', class: 'Sci 102', subject: 'Science', time: '12:00 PM - 1:30 PM' },
+        { day: 'Wednesday', class: 'Eng 103', subject: 'English', time: '2:00 PM - 3:30 PM' },
+        // Add more data as needed
+    ];
 
-          // Dynamically generate the timetable HTML
-          const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-          let timetableHTML = '';
-          daysOfWeek.forEach(day => {
-            timetableHTML += `<div class="timetable-header">${day}</div>`;
-            if (timetable[day]) {
-              timetable[day].forEach(classData => {
-                timetableHTML += `
-                  <div class="timetable-cell">
-                    <div class="class-name">${classData.subject}</div>
-                    <div class="class-time">${classData.time}</div>
-                    <div class="class-teacher">Teacher: ${classData.teacher}</div>
-                    <div class="room">Room: ${classData.room}</div>
-                    <div class="comments">${classData.comments}</div>
-                  </div>
-                `;
-              });
-            } else {
-              timetableHTML += `<div class="timetable-cell empty-cell">No classes</div>`;
-            }
-          });
-
-          // Insert the timetable into the page
-          timetableContainer.innerHTML = timetableHTML;
-        })
-        .catch(error => {
-          console.error('Error fetching timetable data:', error);
+    // Function to populate timetable data dynamically
+    function populateTimetable() {
+        const tableBody = document.querySelector('#timetable tbody');
+        timetableData.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.day}</td>
+                <td>${item.class}</td>
+                <td>${item.subject}</td>
+                <td>${item.time}</td>
+            `;
+            tableBody.appendChild(row);
         });
-    });
-  </script>
+    }
+
+    // Populate the timetable when the page loads
+    window.onload = populateTimetable;
+</script>
+
 </body>
 </html>
