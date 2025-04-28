@@ -3,157 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Timetable</title>
+    <title>Dynamic Timetable</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1A237E; /* Navy Blue */
-            color: white;
-        }
-
-        .container {
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: goldenrod; /* Golden Yellow */
-        }
-
-        .timetable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .timetable th, .timetable td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #fff;
-        }
-
-        .timetable th {
-            background-color: goldenrod;
-        }
-
-        .timetable td {
-            background-color: #1A237E;
-        }
-
-        .timetable tr:nth-child(even) td {
-            background-color: #283593;
-        }
-
-        .back-btn {
-            display: block;
-            width: 150px;
-            padding: 10px;
-            background-color: goldenrod;
-            text-align: center;
-            color: white;
-            text-decoration: none;
-            margin: 20px auto;
-            border-radius: 5px;
-        }
-
-        .back-btn:hover {
-            background-color: #FFB300;
-        }
-
-        @media (max-width: 768px) {
-            .timetable th, .timetable td {
-                padding: 8px;
-            }
-
-            .timetable {
-                font-size: 12px;
-            }
-        }
-
+        /* Styling remains the same as the previous timetable */
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Teacher's Timetable</h1>
+    <section class="timetable">
+        <h2>Weekly Timetable</h2>
+        <div class="table-container" id="timetable-container">
+            <!-- Timetable rows will be populated here dynamically -->
+        </div>
+    </section>
 
-        <table class="timetable">
-            <thead>
-                <tr>
-                    <th>Class Type</th>
-                    <th>Class Name</th>
-                    <th>Day</th>
-                    <th>Time</th>
-                    <th>Subject</th>
-                    <th>Students</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Batch</td>
-                    <td>Grade 5 English</td>
-                    <td>Monday</td>
-                    <td>9:00 AM</td>
-                    <td>English</td>
-                    <td>25 Students</td>
-                </tr>
-                <tr>
-                    <td>One-to-One</td>
-                    <td>John D. (Maths)</td>
-                    <td>Tuesday</td>
-                    <td>11:00 AM</td>
-                    <td>Maths</td>
-                    <td>John D.</td>
-                </tr>
-                <tr>
-                    <td>Batch</td>
-                    <td>Grade 7 Science</td>
-                    <td>Wednesday</td>
-                    <td>10:00 AM</td>
-                    <td>Science</td>
-                    <td>30 Students</td>
-                </tr>
-                <tr>
-                    <td>Batch</td>
-                    <td>Grade 8 History</td>
-                    <td>Thursday</td>
-                    <td>2:00 PM</td>
-                    <td>History</td>
-                    <td>28 Students</td>
-                </tr>
-                <tr>
-                    <td>One-to-One</td>
-                    <td>Sarah S. (English)</td>
-                    <td>Friday</td>
-                    <td>1:00 PM</td>
-                    <td>English</td>
-                    <td>Sarah S.</td>
-                </tr>
-                <tr>
-                    <td>Batch</td>
-                    <td>Grade 6 Maths</td>
-                    <td>Saturday</td>
-                    <td>11:00 AM</td>
-                    <td>Maths</td>
-                    <td>30 Students</td>
-                </tr>
-                <tr>
-                    <td>One-to-One</td>
-                    <td>David T. (Science)</td>
-                    <td>Sunday</td>
-                    <td>9:00 AM</td>
-                    <td>Science</td>
-                    <td>David T.</td>
-                </tr>
-            </tbody>
-        </table>
+    <script>
+        // Google Sheets API URL to fetch the data
+        const spreadsheetId = 'your_spreadsheet_id_here';
+        const range = 'Sheet1!A2:D'; // Range to fetch (adjust accordingly)
+        const apiKey = 'your_google_api_key_here'; // Your Google Sheets API Key
+        
+        // Construct the Google Sheets API URL
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
 
-        <a href="dashboard.html" class="back-btn">Back to Dashboard</a>
-    </div>
+        // Fetch the timetable data from Google Sheets
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const rows = data.values; // Data from the sheet
+                let timetableHtml = '';
+
+                // Loop through rows and build the timetable HTML
+                rows.forEach(row => {
+                    timetableHtml += `
+                        <div class="table-row">
+                            <div class="table-cell">${row[0]}</div>
+                            <div class="table-cell">${row[1]}</div>
+                            <div class="table-cell">${row[2]}</div>
+                            <div class="table-cell">${row[3]}</div>
+                        </div>
+                    `;
+                });
+
+                // Insert the timetable into the HTML
+                document.getElementById('timetable-container').innerHTML = timetableHtml;
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
 
 </body>
 </html>
