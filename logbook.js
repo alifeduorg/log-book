@@ -21,7 +21,7 @@ document.getElementById('logbook-form').addEventListener('submit', function(even
     };
 
     // Send the form data to your Google Apps Script
-    fetch('https://script.google.com/macros/s/AKfycbxcw7miU9-2Tw7CYbnvgjx10gVHSjdPs00nOrHhalOzhuZgQWm7BT4PggtL6deiZ0_Exg/execL', {
+    fetch('https://script.google.com/macros/s/AKfycbxcw7miU9-2Tw7CYbnvgjx10gVHSjdPs00nOrHhalOzhuZgQWm7BT4PggtL6deiZ0_Exg/exec', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
