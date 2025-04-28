@@ -198,26 +198,32 @@
     share_moments: document.getElementById('share_moments').value
   };
 
-  // Send the data to Google Apps Script
-  fetch('https://script.google.com/macros/s/AKfycbxcw7miU9-2Tw7CYbnvgjx10gVHSjdPs00nOrHhalOzhuZgQWm7BT4PggtL6deiZ0_Exg/exec', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.result === 'success') {
-      alert('Logbook submitted successfully!');
-    } else {
-      alert('Error: ' + data.error);
-    }
-  })
-  .catch(error => {
-    alert('Fetch error: ' + error.message);
-  });
+  //hi Send the data to Google Apps Script
+ fetch('https://script.google.com/macros/s/AKfycbxcw7miU9-2Tw7CYbnvgjx10gVHSjdPs00nOrHhalOzhuZgQWm7BT4PggtL6deiZ0_Exg/exec', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(formData)
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  return response.json();
+})
+.then(data => {
+  if (data.result === 'success') {
+    alert('Logbook submitted successfully!');
+  } else {
+    alert('Error: ' + data.message);
+  }
+})
+.catch(error => {
+  console.error('Error occurred:', error);  // More detailed error logs
+  alert('Fetch error: ' + error.message);  // Show the error message
 });
+
   </script>
 </body>
 </html>
