@@ -6,137 +6,67 @@
   <title>Teacher Timetable</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f4f4f9;
-    }
+    /* Styles as per the previous design */
+    /* Add your CSS code here as in previous examples */
 
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-    }
-
-    .timetable {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
-      grid-template-rows: auto repeat(6, 100px); /* 6 rows for the timeslots */
-      gap: 10px;
-      border-radius: 10px;
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-      background-color: white;
-      padding: 20px;
-    }
-
-    .timetable-header {
-      background-color: #f39c12;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      padding: 15px;
-      border-radius: 8px;
-    }
-
-    .timetable-cell {
-      background-color: #fff;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      transition: transform 0.2s ease-in-out;
-    }
-
-    .timetable-cell:hover {
-      transform: translateY(-10px);
-      box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .day-name {
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .class-name {
-      font-size: 14px;
-      color: #4CAF50;
-    }
-
-    .class-time {
-      font-size: 12px;
-      color: #7F8C8D;
-    }
-
-    .empty-cell {
-      background-color: #ecf0f1;
-      border-radius: 8px;
-    }
-
-    /* Mobile responsiveness */
-    @media (max-width: 768px) {
-      .timetable {
-        grid-template-columns: repeat(5, 1fr); /* 5 columns for small screens */
-      }
-    }
-
-    @media (max-width: 480px) {
-      .timetable {
-        grid-template-columns: repeat(4, 1fr); /* 4 columns for mobile */
-      }
-
-      .timetable-header {
-        font-size: 14px;
-      }
-    }
-
+    /* For better readability, add styles for the timetable grid */
   </style>
 </head>
 <body>
-
   <div class="container">
     <h1 class="text-center">Teacher's Weekly Timetable</h1>
 
-    <div class="timetable">
-      <div class="timetable-header">Monday</div>
-      <div class="timetable-header">Tuesday</div>
-      <div class="timetable-header">Wednesday</div>
-      <div class="timetable-header">Thursday</div>
-      <div class="timetable-header">Friday</div>
-      <div class="timetable-header">Saturday</div>
-      <div class="timetable-header">Sunday</div>
-
-      <!-- Example Time Slot Row -->
-      <div class="timetable-cell">
-        <div class="class-name">Math</div>
-        <div class="class-time">10:00 - 11:00 AM</div>
-      </div>
-      <div class="timetable-cell">
-        <div class="class-name">Physics</div>
-        <div class="class-time">11:00 - 12:00 PM</div>
-      </div>
-      <div class="timetable-cell empty-cell"></div>
-      <div class="timetable-cell empty-cell"></div>
-      <div class="timetable-cell">
-        <div class="class-name">English</div>
-        <div class="class-time">12:30 - 1:30 PM</div>
-      </div>
-      <div class="timetable-cell">
-        <div class="class-name">Chemistry</div>
-        <div class="class-time">1:30 - 2:30 PM</div>
-      </div>
-      <div class="timetable-cell empty-cell"></div>
-
-      <!-- Repeat this structure for other time slots -->
-
-    </div>
+    <div class="timetable" id="timetable"></div>
   </div>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fetch timetable data from Google Sheets via Apps Script
+      fetch('YOUR_GOOGLE_APPS_SCRIPT_URL') // Replace with the Apps Script URL you deployed
+        .then(response => response.json())
+        .then(data => {
+          const timetableContainer = document.getElementById('timetable');
+          const timetable = {};
+
+          // Organize data into a structured format (by day)
+          data.forEach(entry => {
+            const { teacher, day, time, subject, room, comments } = entry;
+            if (!timetable[day]) {
+              timetable[day] = [];
+            }
+            timetable[day].push({ teacher, time, subject, room, comments });
+          });
+
+          // Dynamically generate the timetable HTML
+          const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+          let timetableHTML = '';
+          daysOfWeek.forEach(day => {
+            timetableHTML += `<div class="timetable-header">${day}</div>`;
+            if (timetable[day]) {
+              timetable[day].forEach(classData => {
+                timetableHTML += `
+                  <div class="timetable-cell">
+                    <div class="class-name">${classData.subject}</div>
+                    <div class="class-time">${classData.time}</div>
+                    <div class="class-teacher">Teacher: ${classData.teacher}</div>
+                    <div class="room">Room: ${classData.room}</div>
+                    <div class="comments">${classData.comments}</div>
+                  </div>
+                `;
+              });
+            } else {
+              timetableHTML += `<div class="timetable-cell empty-cell">No classes</div>`;
+            }
+          });
+
+          // Insert the timetable into the page
+          timetableContainer.innerHTML = timetableHTML;
+        })
+        .catch(error => {
+          console.error('Error fetching timetable data:', error);
+        });
+    });
+  </script>
 </body>
 </html>
