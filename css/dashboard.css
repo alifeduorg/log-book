@@ -1,115 +1,147 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: #f4f6f8;
+  background-color: #f4f4f9;
 }
 
 .container {
-    display: flex;
-    min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
 }
 
+/* Sidebar */
 .sidebar {
-    width: 250px;
-    background-color: #001f3f; /* Navy Blue */
-    color: #fff;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    position: sticky;
-    top: 0;
-    height: 100vh;
+  width: 250px;
+  background-color: #001F3F;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+  position: fixed;
+  height: 100vh;
 }
 
-.logo {
-    text-align: center;
-    margin-bottom: 30px;
+.sidebar .logo img {
+  width: 80px;
+  margin-bottom: 10px;
 }
 
-.logo img {
-    width: 80px;
-    height: 80px;
-}
-
-.logo h2 {
-    margin-top: 10px;
-    font-size: 20px;
+.sidebar h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
 }
 
 .sidebar ul {
-    list-style: none;
-    margin-top: 20px;
+  list-style: none;
+  width: 100%;
 }
 
 .sidebar ul li {
-    margin: 15px 0;
+  margin: 15px 0;
 }
 
 .sidebar ul li a {
-    text-decoration: none;
-    color: #ffd700; /* Golden Yellow */
-    font-weight: bold;
-    transition: 0.3s;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+  width: 100%;
+  border-radius: 8px;
 }
 
 .sidebar ul li a:hover {
-    color: #ffffff;
-    padding-left: 5px;
+  background-color: #FFC300;
+  color: #001F3F;
 }
 
+/* Main Content */
 .main-content {
-    flex-grow: 1;
-    padding: 30px;
+  margin-left: 250px;
+  padding: 20px;
+  flex: 1;
 }
 
 .topbar {
-    background: linear-gradient(45deg, #001f3f, #003366);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
 }
 
 .topbar h1 {
-    font-size: 28px;
+  font-size: 32px;
+  color: #001F3F;
 }
 
 .topbar p {
-    margin-top: 5px;
-    font-size: 16px;
+  color: #333;
+  margin-top: 5px;
 }
 
+/* Cards Section */
 .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
 }
 
 .card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: 0.3s;
-    cursor: pointer;
+  background-color: #FFC300;
+  color: #001F3F;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  transform: translateY(-5px);
 }
 
-.card h3 {
-    color: #001f3f;
-    margin-bottom: 10px;
+/* Events Section */
+.events {
+  margin-top: 30px;
 }
 
-.card p {
-    color: #555;
+.events h2 {
+  font-size: 24px;
+  color: #001F3F;
+  margin-bottom: 10px;
+}
+
+.events ul {
+  list-style: none;
+  padding-left: 20px;
+}
+
+.events ul li {
+  color: #555;
+  margin-bottom: 5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    position: absolute;
+    left: -250px;
+    transition: 0.3s;
+  }
+
+  .container.active .sidebar {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
 }
