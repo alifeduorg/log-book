@@ -76,7 +76,6 @@
     <h1>Teacher Timetable</h1>
     
     <table id="timetable">
-        <!-- Timetable data will go here -->
         <thead>
             <tr>
                 <th>Day</th>
@@ -86,37 +85,41 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Rows will be dynamically filled here -->
+            <!-- Timetable data will be dynamically added here -->
         </tbody>
     </table>
 </div>
 
 <script>
-    // Example timetable data (this could be fetched from a Google Sheet or database)
-    const timetableData = [
-        { day: 'Monday', class: 'Math 101', subject: 'Mathematics', time: '10:00 AM - 11:30 AM' },
-        { day: 'Tuesday', class: 'Sci 102', subject: 'Science', time: '12:00 PM - 1:30 PM' },
-        { day: 'Wednesday', class: 'Eng 103', subject: 'English', time: '2:00 PM - 3:30 PM' },
-        // Add more data as needed
-    ];
+    const spreadsheetID = 'https://script.google.com/macros/s/AKfycbwI8iMUa3OXO2bseDn8wfjj4RSkHMXAG97179bP0twY8mfab0bm-YGuu70niRslop45fA/exec';  // Replace with your Google Sheets ID
+    const sheetName = 'Timetable';  // Replace with your sheet name (tab name)
 
-    // Function to populate timetable data dynamically
-    function populateTimetable() {
-        const tableBody = document.querySelector('#timetable tbody');
-        timetableData.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.day}</td>
-                <td>${item.class}</td>
-                <td>${item.subject}</td>
-                <td>${item.time}</td>
-            `;
-            tableBody.appendChild(row);
-        });
+    // Function to fetch data from Google Sheets
+    function fetchTimetableData() {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetID}/values/${sheetName}?key=YOUR_API_KEY`;  // Replace YOUR_API_KEY with your Google API key
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const timetable = data.values;
+                const tableBody = document.querySelector('#timetable tbody');
+                // Skip the header row and add the data rows
+                timetable.slice(1).forEach(row => {
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${row[0]}</td>
+                        <td>${row[1]}</td>
+                        <td>${row[2]}</td>
+                        <td>${row[3]}</td>
+                    `;
+                    tableBody.appendChild(newRow);
+                });
+            })
+            .catch(error => console.error('Error fetching timetable data:', error));
     }
 
-    // Populate the timetable when the page loads
-    window.onload = populateTimetable;
+    // Fetch and display timetable data when the page loads
+    window.onload = fetchTimetableData;
 </script>
 
 </body>
