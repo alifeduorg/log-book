@@ -198,20 +198,15 @@
     share_moments: document.getElementById('share_moments').value
   };
 
-  // Send the data to Google Apps Script
- fetch('https://script.google.com/macros/s/AKfycbwNHv1-Nbfx3SWruD_zXjMaTrLakDwsYk_wpkbOc3XhO3xuFWLkrPnRIBWjaUpuYyw9Rg/exec', {
+  // hi Send the data to Google Apps Script
+ fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {  // Use the URL you got from Google Apps Script deployment
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify(formData)
 })
-.then(response => {
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-  return response.json();
-})
+.then(response => response.json())
 .then(data => {
   if (data.result === 'success') {
     alert('Logbook submitted successfully!');
