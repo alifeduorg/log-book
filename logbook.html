@@ -6,126 +6,174 @@
   <title>Logbook Submission</title>
   <style>
     body {
+      background-color: #001f3d;
+      color: white;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
     }
-
-    .logbook-container {
-      background-color: white;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    h2 {
+      text-align: center;
+      color: #FFD700;
+      font-size: 36px;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      position: relative;
+      font-weight: bold;
+    }
+    h2::before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 0;
+      bottom: 0;
+      background-color: #FFBF00;
+      z-index: -1;
+      filter: blur(8px);
+      transform: rotate(-1deg);
+    }
+    .form-label {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
       border-radius: 10px;
-      padding: 30px;
-      width: 400px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: #FFD700;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #FFBF00;
+    }
+    #resultMessage {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #FFD700;
+    }
+    .form-container {
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .back-button {
+      margin-top: 20px;
       text-align: center;
     }
-
-    h2 {
-      margin-bottom: 20px;
-      color: #4CAF50;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    label {
-      font-size: 14px;
-      margin-bottom: 5px;
-      color: #333;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-top: 5px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-
-    button {
-      padding: 12px;
-      background-color: #4CAF50;
+    .back-button a {
+      background-color: #FFD700;
       color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      width: 100%;
-      margin-top: 20px;
+      padding: 12px 25px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
     }
-
-    button:hover {
-      background-color: #45a049;
+    .back-button a:hover {
+      background-color: #FFBF00;
     }
-
-    .error {
-      color: red;
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #FFD700;
       font-size: 14px;
-      margin-top: 15px;
     }
-
-    .success {
-      color: green;
-      font-size: 14px;
-      margin-top: 15px;
-    }
-
   </style>
 </head>
 <body>
 
-  <div class="logbook-container">
-    <h2>Submit Your Logbook</h2>
-    <form id="logbookForm">
-      <div class="form-group">
-        <label for="date">Date</label>
+  <div class="container">
+    <h2>Teacher's Logbook</h2>
+    <div class="form-container">
+      <form id="logbookForm">
+        <label for="date" class="form-label">Date</label>
         <input type="date" id="date" name="date" required>
-      </div>
 
-      <div class="form-group">
-        <label for="teacherName">Teacher Name</label>
+        <label for="teacherName" class="form-label">Teacher’s Name</label>
         <input type="text" id="teacherName" name="teacherName" required>
-      </div>
 
-      <div class="form-group">
-        <label for="classSubject">Subject</label>
-        <input type="text" id="classSubject" name="classSubject" required>
-      </div>
+        <label for="staffId" class="form-label">Staff ID</label>
+        <input type="text" id="staffId" name="staffId" required>
 
-      <div class="form-group">
-        <label for="classDuration">Class Duration (hours)</label>
-        <input type="number" id="classDuration" name="classDuration" min="1" max="5" required>
-      </div>
+        <label for="program" class="form-label">Program</label>
+        <input type="text" id="program" name="program" required>
 
-      <div class="form-group">
-        <label for="studentEngagement">Student Engagement</label>
-        <textarea id="studentEngagement" name="studentEngagement" rows="4" required></textarea>
-      </div>
+        <label for="grade" class="form-label">Grade</label>
+        <input type="text" id="grade" name="grade" required>
 
-      <div class="form-group">
-        <label for="homework">Homework/Tasks Given</label>
-        <textarea id="homework" name="homework" rows="4"></textarea>
-      </div>
+        <label for="studentName" class="form-label">Student Name</label>
+        <input type="text" id="studentName" name="studentName" required>
 
-      <div class="form-group">
-        <label for="attachments">Upload Class Screenshot or Student Work</label>
-        <input type="file" id="attachments" name="attachments" accept="image/*, .pdf" />
-      </div>
+        <label for="subjects" class="form-label">Subjects</label>
+        <input type="text" id="subjects" name="subjects" required>
 
-      <button type="submit">Submit Logbook</button>
+        <label for="classIn" class="form-label">Class In</label>
+        <input type="text" id="classIn" name="classIn" required>
 
-      <div class="error" id="logbookError"></div>
-      <div class="success" id="logbookSuccess"></div>
-    </form>
+        <label for="classDuration" class="form-label">Class Duration (hrs)</label>
+        <input type="number" id="classDuration" name="classDuration" required>
+
+        <label for="taughtToday" class="form-label">What did you teach today?</label>
+        <textarea id="taughtToday" name="taughtToday" rows="3" required></textarea>
+
+        <label for="studentEngagement" class="form-label">Student Engagement</label>
+        <textarea id="studentEngagement" name="studentEngagement" rows="3" required></textarea>
+
+        <label for="homework" class="form-label">Homework or Tasks Given</label>
+        <textarea id="homework" name="homework" rows="3"></textarea>
+
+        <label for="workType" class="form-label">What type of work?</label>
+        <input type="text" id="workType" name="workType" required>
+
+        <label for="file" class="form-label">Upload Class Screenshot/Work</label>
+        <input type="file" id="file" name="file">
+
+        <label for="sharedInfo" class="form-label">Anything you'd like to share?</label>
+        <textarea id="sharedInfo" name="sharedInfo" rows="3"></textarea>
+
+        <button type="submit">Submit Logbook</button>
+      </form>
+
+      <div id="resultMessage"></div>
+    </div>
+
+    <div class="back-button">
+      <a href="dashboard.html">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Powered by <strong>Alif Edu</strong></p>
   </div>
 
   <script>
@@ -134,26 +182,22 @@
 
       var formData = new FormData(this);
 
-      fetch("https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec", {
+      fetch("https://script.google.com/macros/shttps://script.google.com/macros/s/AKfycbwI8iMUa3OXO2bseDn8wfjj4RSkHMXAG97179bP0twY8mfab0bm-YGuu70niRslop45fA/exec/exec", {
         method: "POST",
         body: formData
       })
       .then(response => response.json())
       .then(data => {
-        if (data.status === "success") {
-          document.getElementById("logbookSuccess").innerText = "Logbook submitted successfully!";
-          document.getElementById("logbookError").innerText = "";
-          // Clear the form
+        if (data.result === "success") {
+          document.getElementById("resultMessage").innerText = "Logbook submitted successfully!";
           document.getElementById("logbookForm").reset();
         } else {
-          document.getElementById("logbookError").innerText = "There was an error submitting the logbook.";
-          document.getElementById("logbookSuccess").innerText = "";
+          document.getElementById("resultMessage").innerText = "There was an error, please try again.";
         }
       })
       .catch(error => {
         console.error("Error:", error);
-        document.getElementById("logbookError").innerText = "An error occurred, please try again.";
-        document.getElementById("logbookSuccess").innerText = "";
+        document.getElementById("resultMessage").innerText = "An error occurred.";
       });
     });
   </script>
