@@ -2,85 +2,139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher Login</title>
+  <title>Alif Edu Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      background: navy;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background-color: #f0f0f0;
-      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
     }
-    .login-container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    input[type="text"], input[type="password"] {
+
+    .login-card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 25px rgba(0,0,0,0.5);
+      max-width: 400px;
       width: 100%;
-      padding: 10px;
+      text-align: center;
+      transform: rotateY(3deg);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .login-card:hover {
+      transform: rotateY(0deg);
+      box-shadow: 0 20px 30px rgba(0,0,0,0.6);
+    }
+
+    .logo {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: navy;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
       margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ddd;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #4CAF50;
+
+    .login-btn {
+      background-color: goldenrod;
       color: white;
       border: none;
-      border-radius: 5px;
+      padding: 12px;
+      border-radius: 10px;
       cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
     }
-    button:hover {
-      background-color: #45a049;
+
+    .login-btn:hover {
+      background-color: darkgoldenrod;
+    }
+
+    .footer {
+      margin-top: 20px;
+      color: white;
+      font-size: 14px;
+    }
+
+    @media (max-width: 500px) {
+      .login-card {
+        padding: 25px 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Teacher Login</h2>
-    <input type="text" id="staffId" placeholder="Enter Staff ID" />
-    <input type="password" id="password" placeholder="Enter Password" />
-    <button onclick="login()">Login</button>
-  </div>
+  <form class="login-card" id="loginForm">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Lightbulb_icon.svg/1024px-Lightbulb_icon.svg.png" class="logo" alt="Alif Edu Logo"/>
+    <h2>Alif Edu Login</h2>
+
+    <input type="text" name="staffID" placeholder="Staff ID" required />
+    <input type="password" name="password" placeholder="Password" required />
+    
+    <select name="role" required>
+      <option value="" disabled selected>Select Role</option>
+      <option value="admin">Admin</option>
+      <option value="mentor">Mentor</option>
+      <option value="teacher">Teacher</option>
+    </select>
+
+    <button type="submit" class="login-btn">Login</button>
+
+    <div class="footer">Powered by Alif Edu</div>
+  </form>
 
   <script>
-    // JavaScript function to authenticate user via Google Apps Script
-    function authenticateTeacher(staffId, password) {
-      fetch('https://script.google.com/macros/s/AKfycbxQKie5IVfQp50XzK2soKVsFHqQtph8CnI_SHgfMQ6AY3c-0QAOjmD81zDKSzXKZ8k3tQ/exec?staffId=' + staffId + '&password=' + password)
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert("Login Successful");
-            // Redirect to logbook page or dashboard
-            window.location.href = "dashboard.html"; // Replace with your actual page URL
-          } else {
-            alert("Invalid Staff ID or Password");
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-    // Function that gets triggered when Login button is clicked
-    function login() {
-      const staffId = document.getElementById("staffId").value;
-      const password = document.getElementById("password").value;
-      
-      // Ensure staffId and password are not empty
-      if (staffId === "" || password === "") {
-        alert("Please enter both Staff ID and Password");
-      } else {
-        authenticateTeacher(staffId, password); // Authenticate the user
-      }
-    }
+      const form = e.target;
+      const staffID = form.staffID.value.trim();
+      const password = form.password.value.trim();
+      const role = form.role.value;
+
+      fetch("YOUR_SCRIPT_URL_HERE", {
+        method: "POST",
+        body: JSON.stringify({ staffID, password }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.role === role) {
+          if (role === "admin") {
+            window.location.href = "admin-dashboard.html";
+          } else if (role === "mentor") {
+            window.location.href = "mentor-dashboard.html";
+          } else if (role === "teacher") {
+            window.location.href = "teacher-dashboard.html";
+          }
+        } else {
+          alert("Invalid credentials or role mismatch.");
+        }
+      })
+      .catch(err => {
+        alert("Login failed. Please try again.");
+        console.error(err);
+      });
+    });
   </script>
 </body>
 </html>
-
