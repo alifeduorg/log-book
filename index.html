@@ -82,7 +82,8 @@
 </head>
 <body>
   <form class="login-card" id="loginForm">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Lightbulb_icon.svg/1024px-Lightbulb_icon.svg.png" class="logo" alt="Alif Edu Logo"/>
+    <img src="1.png" class="logo" alt="Alif Edu Logo" />
+
     <h2>Alif Edu Login</h2>
 
     <input type="text" name="staffID" placeholder="Staff ID" required />
@@ -109,7 +110,7 @@
       const password = form.password.value.trim();
       const role = form.role.value;
 
-      fetch("YOUR_SCRIPT_URL_HERE", {
+      fetch("https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec", {
         method: "POST",
         body: JSON.stringify({ staffID, password }),
         headers: {
@@ -124,7 +125,7 @@
           } else if (role === "mentor") {
             window.location.href = "mentor-dashboard.html";
           } else if (role === "teacher") {
-            window.location.href = "teacher-dashboard.html";
+            window.location.href = "dashboard.html";
           }
         } else {
           alert("Invalid credentials or role mismatch.");
