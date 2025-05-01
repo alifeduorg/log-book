@@ -232,10 +232,23 @@
     </div>
   </div>
 
-  <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
+ <script>
+  let sidebarOpen = false;
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    sidebarOpen = !sidebarOpen;
+    sidebar.classList.toggle("active", sidebarOpen);
+  }
+
+  // Optional: Close sidebar if window is resized to large
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      document.getElementById("sidebar").classList.remove("active");
+      sidebarOpen = false;
     }
-  </script>
+  });
+</script>
+
 </body>
 </html>
