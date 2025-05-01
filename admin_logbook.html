@@ -1,139 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher-wise Logbook</title>
+  <base target="_top">
   <style>
+    body {
+      background: linear-gradient(to right, navy, goldenrod);
+      font-family: Arial, sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #001f3f;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    header img {
+      height: 50px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: goldenrod;
+      text-shadow: 1px 1px 2px black;
+    }
+
+    .taskbar {
+      background-color: #002c6a;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      align-items: center;
+    }
+
+    .taskbar label {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .taskbar select, .taskbar button {
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .taskbar select {
+      background-color: goldenrod;
+      color: navy;
+    }
+
+    .taskbar button {
+      background-color: #ffcc00;
+      color: navy;
+      box-shadow: 2px 2px 4px #111;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
+      background: #fff;
+      color: #000;
       margin: 20px 0;
+      font-size: 12px;
     }
-    table, th, td {
-      border: 1px solid black;
-    }
+
     th, td {
-      padding: 10px;
-      text-align: center;
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: left;
     }
-    select, button {
-      margin: 10px;
-    }
-    .pdf-button {
+
+    th {
       background-color: goldenrod;
-      color: white;
-      padding: 10px;
+      color: navy;
+    }
+
+    .btn-back {
+      margin: 20px;
+      padding: 10px 20px;
+      background: #ffcc00;
       border: none;
+      font-weight: bold;
       cursor: pointer;
-      margin-top: 20px;
+      color: navy;
+      border-radius: 5px;
+      box-shadow: 2px 2px 5px #222;
     }
   </style>
 </head>
 <body>
 
-  <h1>Teacher-wise Logbook</h1>
+  <header>
+    <img src="1.png" alt="Alif Logo"> <!-- Replace with your logo URL -->
+    <h1>Logbook Report - Principal View</h1>
+  </header>
 
-  <label for="teacher">Select Teacher:</label>
-  <select id="teacher">
-    <!-- Teachers list will be populated here -->
-  </select>
+  <div class="taskbar">
+    <label>Teacher:
+      <select id="teacherFilter">
+        <option value="">All</option>
+        <option value="Teacher A">Teacher A</option>
+        <option value="Teacher B">Teacher B</option>
+        <!-- Add teacher names dynamically if needed -->
+      </select>
+    </label>
+    <label>Month:
+      <select id="monthFilter">
+        <option value="">All</option>
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </label>
+    <button onclick="loadLogbook()">Filter</button>
+    <button onclick="downloadPDF()">Download PDF</button>
+  </div>
 
-  <label for="month">Select Month:</label>
-  <select id="month">
-    <option value="">All</option>
-    <option value="1">January</option>
-    <option value="2">February</option>
-    <option value="3">March</option>
-    <option value="4">April</option>
-    <option value="5">May</option>
-    <option value="6">June</option>
-    <option value="7">July</option>
-    <option value="8">August</option>
-    <option value="9">September</option>
-    <option value="10">October</option>
-    <option value="11">November</option>
-    <option value="12">December</option>
-  </select>
+  <div id="logbook-table" style="overflow-x:auto;"></div>
 
-  <button onclick="loadLogbook()">Load Logbook</button>
-
-  <table id="logbookTable">
-    <thead>
-      <tr>
-        <th>Timestamp</th>
-        <th>Date</th>
-        <th>Teacher’s Name</th>
-        <th>Staff ID</th>
-        <th>Program</th>
-        <th>Class</th>
-        <th>Student Name</th>
-        <th>Subjects</th>
-        <th>Class In</th>
-        <th>Class Duration</th>
-        <th>What did you teach today?</th>
-        <th>Student Engagement</th>
-        <th>Homework/Tasks Given?</th>
-        <th>Type of Work</th>
-        <th>Class Notification Message</th>
-        <th>Anything to Share?</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Logbook data will be inserted here -->
-    </tbody>
-  </table>
-
-  <button class="pdf-button" onclick="downloadPDF()">Download as PDF</button>
+  <button class="btn-back" onclick="goBack()">⬅ Back to Dashboard</button>
 
   <script>
-    // Load list of teachers from the Google Apps Script
-    function loadTeachers() {
-      google.script.run.withSuccessHandler(function(teachers) {
-        var teacherSelect = document.getElementById("teacher");
-        teachers.forEach(function(teacher) {
-          var option = document.createElement("option");
-          option.value = teacher;
-          option.textContent = teacher;
-          teacherSelect.appendChild(option);
-        });
-      }).getTeachersList();
-    }
-
-    // Load logbook data for the selected teacher and month
     function loadLogbook() {
-      var teacherName = document.getElementById("teacher").value;
-      var month = document.getElementById("month").value;
+      const teacher = document.getElementById("teacherFilter").value;
+      const month = document.getElementById("monthFilter").value;
 
-      google.script.run.withSuccessHandler(function(data) {
-        var tableBody = document.getElementById("logbookTable").getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = ''; // Clear previous table content
-
-        data.forEach(function(row) {
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td>' + row[0] + '</td><td>' + row[1] + '</td><td>' + row[2] + '</td><td>' + row[3] + '</td>' +
-                         '<td>' + row[4] + '</td><td>' + row[5] + '</td><td>' + row[6] + '</td><td>' + row[7] + '</td>' +
-                         '<td>' + row[8] + '</td><td>' + row[9] + '</td><td>' + row[10] + '</td><td>' + row[11] + '</td>' +
-                         '<td>' + row[12] + '</td><td>' + row[13] + '</td><td>' + row[14] + '</td>';
-          tableBody.appendChild(tr);
-        });
-      }).getTeacherLogbookData(teacherName, month);
+      google.script.run.withSuccessHandler(renderTable)
+        .getLogbookData(teacher, month);
     }
 
-    // Download the logbook data as PDF
+    function renderTable(data) {
+      let html = `<table><tr>
+        <th>Timestamp</th><th>Date</th><th>Teacher</th><th>Staff ID</th><th>Program</th><th>Class</th>
+        <th>Student Name</th><th>Subjects</th><th>Class In</th><th>Duration</th>
+        <th>What did you teach today?</th><th>Engagement</th><th>Homework</th>
+        <th>Work Type</th><th>Class Notification</th><th>Remarks</th></tr>`;
+
+      data.forEach(row => {
+        html += `<tr>
+          <td>${row.timestamp}</td><td>${row.date}</td><td>${row.teacher}</td><td>${row.staffId}</td>
+          <td>${row.program}</td><td>${row.class}</td><td>${row.studentName}</td><td>${row.subjects}</td>
+          <td>${row.classIn}</td><td>${row.duration}</td><td>${row.taughtToday}</td><td>${row.engagement}</td>
+          <td>${row.homework}</td><td>${row.workType}</td><td>${row.notification}</td><td>${row.share}</td>
+        </tr>`;
+      });
+
+      html += '</table>';
+      document.getElementById("logbook-table").innerHTML = html;
+    }
+
+    function goBack() {
+      window.location.href = "https://alifeduorg.github.io//log-book/admin.html"; // Replace with your dashboard URL
+    }
+
     function downloadPDF() {
-      var doc = new jsPDF();
-      doc.autoTable({ html: '#logbookTable' });
-      doc.save('teacher_logbook.pdf');
+      const printWindow = window.open('', '', 'height=800,width=1200');
+      printWindow.document.write('<html><head><title>Logbook PDF</title></head><body>');
+      printWindow.document.write(document.getElementById("logbook-table").innerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.print();
     }
 
-    // Load teachers on page load
-    window.onload = function() {
-      loadTeachers();
-    }
+    window.onload = loadLogbook;
   </script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </body>
 </html>
