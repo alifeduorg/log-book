@@ -31,31 +31,6 @@
       padding: 1rem;
     }
 
-    .filter-section {
-      margin-bottom: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .filter-section select, .btn {
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 5px;
-      border: none;
-    }
-
-    .btn {
-      background-color: goldenrod;
-      color: navy;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn:hover {
-      background-color: #daa520;
-    }
-
     .card {
       background-color: white;
       color: black;
@@ -82,6 +57,32 @@
       color: white;
     }
 
+    .filter-section {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filter-section select, .btn {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .btn {
+      background-color: goldenrod;
+      color: navy;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #daa520;
+    }
+
     .back-btn {
       margin-top: 20px;
     }
@@ -96,34 +97,41 @@
 <body>
   <div class="topbar">
     <img src="1.png" class="logo" alt="Alif Logo">
-    Logbook1 Report - Principal View
+    Logbook Report - Principal View
   </div>
 
   <div class="container">
-    <div class="filter-section">
-      <select id="teacherFilter">
-        <option value="">All Teachers</option>
-      </select>
-      <select id="monthFilter">
-        <option value="">All Months</option>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-      </select>
-      <button class="btn" onclick="applyFilter()">Apply Filter</button>
-      <button class="btn" onclick="downloadPDF()">Download PDF</button>
-    </div>
-
     <div class="card">
+      <!-- Filter Section: placed inside the card -->
+      <div class="filter-section">
+        <div>
+          <select id="teacherFilter">
+            <option value="">All Teachers</option>
+          </select>
+        </div>
+        <div>
+          <select id="monthFilter">
+            <option value="">All Months</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn" onclick="applyFilter()">Apply Filter</button>
+        </div>
+      </div>
+
+      <!-- Table Section -->
       <table id="logbookTable">
         <thead id="theadRow"></thead>
         <tbody id="tbodyRows"></tbody>
@@ -145,7 +153,7 @@
       .then(data => {
         rawData = data;
         populateFilters(data);
-        renderTable(data);
+        renderTable(data);  // Initially, render the full data
       });
 
     // Populate the teacher filter with unique names
