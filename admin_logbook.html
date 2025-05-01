@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher-wise Logbook</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    select, button {
+      margin: 10px;
+    }
+    .pdf-button {
+      background-color: goldenrod;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Teacher-wise Logbook</h1>
+
+  <label for="teacher">Select Teacher:</label>
+  <select id="teacher">
+    <!-- Teachers list will be populated here -->
+  </select>
+
+  <label for="month">Select Month:</label>
+  <select id="month">
+    <option value="">All</option>
+    <option value="1">January</option>
+    <option value="2">February</option>
+    <option value="3">March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+
+  <button onclick="loadLogbook()">Load Logbook</button>
+
+  <table id="logbookTable">
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Date</th>
+        <th>Teacher’s Name</th>
+        <th>Staff ID</th>
+        <th>Program</th>
+        <th>Class</th>
+        <th>Student Name</th>
+        <th>Subjects</th>
+        <th>Class In</th>
+        <th>Class Duration</th>
+        <th>What did you teach today?</th>
+        <th>Student Engagement</th>
+        <th>Homework/Tasks Given?</th>
+        <th>Type of Work</th>
+        <th>Class Notification Message</th>
+        <th>Anything to Share?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Logbook data will be inserted here -->
+    </tbody>
+  </table>
+
+  <button class="pdf-button" onclick="downloadPDF()">Download as PDF</button>
+
+  <script>
+    // Load list of teachers from the Google Apps Script
+    function loadTeachers() {
+      google.script.run.withSuccessHandler(function(teachers) {
+        var teacherSelect = document.getElementById("teacher");
+        teachers.forEach(function(teacher) {
+          var option = document.createElement("option");
+          option.value = teacher;
+          option.textContent = teacher;
+          teacherSelect.appendChild(option);
+        });
+      }).getTeachersList();
+    }
+
+    // Load logbook data for the selected teacher and month
+    function loadLogbook() {
+      var teacherName = document.getElementById("teacher").value;
+      var month = document.getElementById("month").value;
+
+      google.script.run.withSuccessHandler(function(data) {
+        var tableBody = document.getElementById("logbookTable").getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // Clear previous table content
+
+        data.forEach(function(row) {
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td>' + row[0] + '</td><td>' + row[1] + '</td><td>' + row[2] + '</td><td>' + row[3] + '</td>' +
+                         '<td>' + row[4] + '</td><td>' + row[5] + '</td><td>' + row[6] + '</td><td>' + row[7] + '</td>' +
+                         '<td>' + row[8] + '</td><td>' + row[9] + '</td><td>' + row[10] + '</td><td>' + row[11] + '</td>' +
+                         '<td>' + row[12] + '</td><td>' + row[13] + '</td><td>' + row[14] + '</td>';
+          tableBody.appendChild(tr);
+        });
+      }).getTeacherLogbookData(teacherName, month);
+    }
+
+    // Download the logbook data as PDF
+    function downloadPDF() {
+      var doc = new jsPDF();
+      doc.autoTable({ html: '#logbookTable' });
+      doc.save('teacher_logbook.pdf');
+    }
+
+    // Load teachers on page load
+    window.onload = function() {
+      loadTeachers();
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+</html>
