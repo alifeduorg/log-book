@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Alif Edu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #0a1f44;
+      --accent: #ffcc00;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-left: 6px solid var(--accent);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
+      margin: 0;
+      color: var(--primary);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #eee;
+      font-size: 0.85rem;
+    }
+
+    button {
+      background: var(--accent);
+      border: none;
+      padding: 8px 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Principal Dashboard</h1>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <section class="dashboard">
+    <div class="card" onclick="go('teacher-attendance.html')"><h2>📅 Teacher Attendance</h2></div>
+    <div class="card" onclick="go('student-attendance.html')"><h2>🎓 Student Attendance</h2></div>
+    <div class="card" onclick="go('logbook.html')"><h2>📘 Logbook (Daily View)</h2></div>
+    <div class="card" onclick="go('timetable.html')"><h2>🕒 Class Timetable</h2></div>
+    <div class="card" onclick="go('teacher-details.html')"><h2>👩‍🏫 Teacher Details</h2></div>
+    <div class="card" onclick="go('student-details.html')"><h2>🧒 Student Details</h2></div>
+    <div class="card" onclick="go('weekly-report.html')"><h2>📝 Weekly Report</h2></div>
+  </section>
+
+  <footer>Powered by Alif Edu © 2025</footer>
+
+  <script>
+    // Protect dashboard - allow only logged-in admins
+    if (localStorage.getItem("alifedu_loggedIn") !== "true" || localStorage.getItem("alifedu_role") !== "Admin") {
+      alert("You must login first.");
+      window.location.href = "index.html";
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    function go(page) {
+      window.location.href = page;
+    }
+  </script>
+
+</body>
+</html>
