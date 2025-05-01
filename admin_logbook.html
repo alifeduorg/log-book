@@ -95,7 +95,7 @@
 </head>
 <body>
   <div class="topbar">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Alif.svg/800px-Alif.svg.png" class="logo" alt="Alif Logo">
+    <img src="1.png" class="logo" alt="Alif Logo">
     Logbook Report - Principal View
   </div>
 
@@ -139,7 +139,8 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec";
     let rawData = [];
 
-    fetch(WEB_APP_URL)
+    // Fetch the data from the Google Apps Script Web App URL
+    fetch(https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec)
       .then(res => res.json())
       .then(data => {
         rawData = data;
@@ -147,6 +148,7 @@
         renderTable(data);
       });
 
+    // Populate the teacher filter with unique names
     function populateFilters(data) {
       const teacherSet = new Set();
       data.forEach(row => teacherSet.add(row["Teacher’s Name"]));
@@ -159,12 +161,13 @@
       });
     }
 
+    // Apply the selected filters to the data and render the table
     function applyFilter() {
       const teacher = document.getElementById("teacherFilter").value;
       const month = document.getElementById("monthFilter").value;
 
       const filtered = rawData.filter(row => {
-        let teacherMatch = teacher ? row["Teacher’s Name"] === teacher : true;
+        let teacherMatch = teacher ? row["Teacher’s Name"].trim().toLowerCase() === teacher.trim().toLowerCase() : true;
         let monthMatch = true;
         if (month && row.Date) {
           const rowMonth = new Date(row.Date).getMonth() + 1;
@@ -175,6 +178,7 @@
       renderTable(filtered);
     }
 
+    // Render the filtered data in the table
     function renderTable(data) {
       const thead = document.getElementById("theadRow");
       const tbody = document.getElementById("tbodyRows");
@@ -206,10 +210,12 @@
       });
     }
 
+    // Go back to the previous page (dashboard)
     function goBack() {
       window.history.back();
     }
 
+    // Download the table as a PDF
     function downloadPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('l', 'pt', 'a4');
