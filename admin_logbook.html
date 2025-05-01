@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logbook Report - Alif Edu</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Principal Logbook Report</title>
   <style>
     body {
       margin: 0;
@@ -13,18 +13,11 @@
     }
 
     .topbar {
-      background-color: navy;
       padding: 1rem;
       text-align: center;
-      color: white;
+      background-color: navy;
       font-size: 1.5rem;
       font-weight: bold;
-    }
-
-    .logo {
-      height: 40px;
-      vertical-align: middle;
-      margin-right: 10px;
     }
 
     .container {
@@ -33,198 +26,197 @@
 
     .card {
       background-color: white;
-      color: black;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      border-radius: 15px;
       padding: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 12px;
       margin-top: 1rem;
     }
 
     th, td {
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       padding: 8px;
-      font-size: 12px;
+      text-align: left;
+      position: relative;
     }
 
     th {
       background-color: navy;
       color: white;
-      position: relative;
     }
 
-    th select {
+    .filter-icon {
+      cursor: pointer;
+      font-size: 14px;
+      float: right;
+      margin-left: 5px;
+    }
+
+    .filter-menu {
       position: absolute;
-      top: 5px;
-      right: 5px;
-      border: none;
+      background: white;
+      border: 1px solid #ddd;
       padding: 5px;
-      background-color: white;
+      z-index: 1000;
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
       color: black;
     }
 
-    .filter-section {
-      margin-bottom: 1rem;
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-    }
-
-    .filter-section select, .btn {
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 5px;
-      border: none;
+    .filter-menu select {
+      width: 100%;
+      padding: 5px;
     }
 
     .btn {
       background-color: goldenrod;
       color: navy;
+      border: none;
+      padding: 10px 15px;
       font-weight: bold;
       cursor: pointer;
+      border-radius: 5px;
+      margin-right: 10px;
     }
 
     .btn:hover {
-      background-color: #daa520;
+      background-color: #ffcc00;
     }
 
-    .back-btn {
-      margin-top: 20px;
-    }
-
-    @media screen and (max-width: 768px) {
-      .filter-section {
-        flex-direction: column;
+    @media(max-width: 768px){
+      table {
+        font-size: 10px;
       }
     }
   </style>
 </head>
 <body>
   <div class="topbar">
-    <img src="1.png" class="logo" alt="Alif Logo">
+    <img src="1.png" alt="Alif Logo" height="30" style="vertical-align: middle;">
     Logbook Report - Principal View
   </div>
 
   <div class="container">
     <div class="card">
-      <!-- Filter Section: placed inside the card -->
-      <div class="filter-section">
-        <button class="btn" onclick="downloadPDF()">Download as PDF</button>
-      </div>
-
-      <!-- Table Section -->
+      <button class="btn" onclick="downloadPDF()">Download PDF</button>
       <table id="logbookTable">
         <thead id="theadRow"></thead>
         <tbody id="tbodyRows"></tbody>
       </table>
     </div>
-
-    <button class="btn back-btn" onclick="goBack()">← Back to Dashboard</button>
   </div>
 
+  <!-- jsPDF for PDF export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec";
-    let rawData = [];
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-    // Fetch the data from the Google Apps Script Web App URL
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec"; // Replace with your script URL
+    let allData = [];
+    let currentHeaders = [];
+
+    // Fetch and load data
     fetch(WEB_APP_URL)
       .then(res => res.json())
       .then(data => {
-        rawData = data;
-        renderTable(data);  // Initially, render the full data
-        addFilterOptions(data);
+        allData = data;
+        currentHeaders = Object.keys(data[0]);
+        renderTable(data);
       });
 
-    // Add filter options to each table header (like Google Sheets filter)
-    function addFilterOptions(data) {
-      const headers = Object.keys(data[0]);
-      const thead = document.getElementById("theadRow");
-      
-      const tr = document.createElement("tr");
-      headers.forEach(header => {
-        const th = document.createElement("th");
-        th.innerText = header;
-
-        // Create the filter dropdown inside the header
-        const select = document.createElement("select");
-        select.innerHTML = `<option value="">Filter by ${header}</option>`;
-        const uniqueValues = [...new Set(data.map(row => row[header]))];
-        uniqueValues.forEach(value => {
-          const option = document.createElement("option");
-          option.value = value;
-          option.textContent = value;
-          select.appendChild(option);
-        });
-
-        select.addEventListener("change", () => filterTable(headers));
-        th.appendChild(select);
-        tr.appendChild(th);
-      });
-      thead.appendChild(tr);
-    }
-
-    // Filter the table rows based on selected values
-    function filterTable(headers) {
-      const filteredData = rawData.filter(row => {
-        return headers.every((header, index) => {
-          const selectedValue = document.querySelectorAll("th select")[index].value;
-          return selectedValue ? row[header] === selectedValue : true;
-        });
-      });
-      renderTable(filteredData);
-    }
-
-    // Render the table with filtered or all data
     function renderTable(data) {
-      const thead = document.getElementById("theadRow");
-      const tbody = document.getElementById("tbodyRows");
-      thead.innerHTML = "";
-      tbody.innerHTML = "";
+      const thead = document.getElementById('theadRow');
+      const tbody = document.getElementById('tbodyRows');
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
 
-      if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="100%">No data found</td></tr>';
-        return;
-      }
+      const tr = document.createElement('tr');
+      currentHeaders.forEach((header, idx) => {
+        const th = document.createElement('th');
+        th.textContent = header;
 
-      const headers = Object.keys(data[0]);
-      const tr = document.createElement("tr");
-      headers.forEach(h => {
-        const th = document.createElement("th");
-        th.innerText = h;
+        const icon = document.createElement('span');
+        icon.textContent = '🔍';
+        icon.className = 'filter-icon';
+        icon.onclick = () => showFilterMenu(header, idx, icon);
+
+        th.appendChild(icon);
+        th.style.position = 'relative';
         tr.appendChild(th);
       });
       thead.appendChild(tr);
 
       data.forEach(row => {
-        const tr = document.createElement("tr");
-        headers.forEach(h => {
-          const td = document.createElement("td");
-          td.innerText = row[h];
+        const tr = document.createElement('tr');
+        currentHeaders.forEach(key => {
+          const td = document.createElement('td');
+          td.textContent = row[key];
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
       });
     }
 
-    // Go back to the previous page (dashboard)
-    function goBack() {
-      window.history.back();
+    function showFilterMenu(header, idx, iconEl) {
+      closeAllFilters();
+
+      const uniqueValues = [...new Set(allData.map(row => row[header]))];
+      const menu = document.createElement('div');
+      menu.className = 'filter-menu';
+
+      const select = document.createElement('select');
+      select.innerHTML = `<option value="">-- Show All --</option>`;
+      uniqueValues.forEach(val => {
+        const option = document.createElement('option');
+        option.value = val;
+        option.textContent = val;
+        select.appendChild(option);
+      });
+
+      select.onchange = () => {
+        const value = select.value;
+        const filtered = value
+          ? allData.filter(row => row[header] === value)
+          : allData;
+        renderTable(filtered);
+        closeAllFilters();
+      };
+
+      menu.appendChild(select);
+      iconEl.parentElement.appendChild(menu);
+      menu.style.display = 'block';
     }
 
-    // Download the table as a PDF
+    function closeAllFilters() {
+      document.querySelectorAll('.filter-menu').forEach(menu => menu.remove());
+    }
+
+    document.addEventListener('click', e => {
+      if (!e.target.classList.contains('filter-icon') &&
+          !e.target.closest('.filter-menu')) {
+        closeAllFilters();
+      }
+    });
+
+    // PDF Download
     function downloadPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF('l', 'pt', 'a4');
       doc.setFontSize(14);
-      doc.text("Logbook Report", 40, 30);
-      doc.autoTable({ html: '#logbookTable', theme: 'grid', startY: 50, styles: { fontSize: 8 } });
+      doc.text("Principal Logbook Report", 40, 30);
+      doc.autoTable({
+        html: '#logbookTable',
+        startY: 50,
+        theme: 'grid',
+        styles: { fontSize: 8 }
+      });
       doc.save("Logbook_Report.pdf");
     }
   </script>
