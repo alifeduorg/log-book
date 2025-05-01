@@ -9,11 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- Added jsPDF for PDF download -->
+
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #001f3d; /* Navy Blue */
             color: #ffffff;
+            margin: 0;
+            padding: 0;
         }
         .container {
             max-width: 1200px;
@@ -26,31 +30,43 @@
         h1 {
             color: #ffd700; /* Golden Yellow */
             text-align: center;
+            margin-bottom: 20px;
         }
         .btn {
             background-color: #ffd700;
             color: #001f3d;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-bottom: 20px;
         }
         .btn:hover {
             background-color: #e6c200;
         }
         table {
             width: 100%;
-            margin-top: 20px;
             border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
         }
         th, td {
-            padding: 12px;
+            padding: 15px;
             text-align: left;
             border: 1px solid #ddd;
+            word-wrap: break-word;
         }
         th {
             background-color: #001f3d;
             color: #ffffff;
+        }
+        #logbookTable_wrapper {
+            overflow-x: auto;
+            max-height: 500px;
+        }
+        .dataTables_scrollBody {
+            max-height: 400px;
+            overflow-y: scroll;
         }
         .filter-icon {
             cursor: pointer;
@@ -62,32 +78,34 @@
     <div class="container">
         <h1>Principal Logbook Dashboard</h1>
 
-        <button class="btn" onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+        <button class="btn" onclick="window.location.href='admin.html'">Back to Dashboard</button>
 
         <!-- Logbook Table -->
-        <table id="logbookTable">
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>Date</th>
-                    <th>Teacher’s Name</th>
-                    <th>Staff ID</th>
-                    <th>Program</th>
-                    <th>Class</th>
-                    <th>Student Name</th>
-                    <th>Subjects</th>
-                    <th>Class In</th>
-                    <th>Class Duration</th>
-                    <th>What did you teach today?</th>
-                    <th>Student Engagement</th>
-                    <th>Homework or Tasks Given?</th>
-                    <th>What type of Work</th>
-                    <th>Upload Class Notification Message</th>
-                    <th>Anything you'd like to share?</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div id="logbookTable_wrapper">
+            <table id="logbookTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Date</th>
+                        <th>Teacher’s Name</th>
+                        <th>Staff ID</th>
+                        <th>Program</th>
+                        <th>Class</th>
+                        <th>Student Name</th>
+                        <th>Subjects</th>
+                        <th>Class In</th>
+                        <th>Class Duration</th>
+                        <th>What did you teach today?</th>
+                        <th>Student Engagement</th>
+                        <th>Homework or Tasks Given?</th>
+                        <th>What type of Work</th>
+                        <th>Upload Class Notification Message</th>
+                        <th>Anything you'd like to share?</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
         <br>
         <button class="btn" id="downloadBtn">Download PDF</button>
@@ -96,7 +114,7 @@
     <script>
         // Replace this URL with the web app URL from Google Apps Script
         const scriptUrl = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec';
-        
+
         $(document).ready(function() {
             // Fetch data from Google Sheets
             $.getJSON(scriptUrl, function(data) {
@@ -109,18 +127,24 @@
                     $('#logbookTable tbody').append(tr);
                 });
 
-                // Initialize DataTable
+                // Initialize DataTable with scroll and no horizontal scroll
                 $('#logbookTable').DataTable({
                     paging: true,
                     ordering: true,
                     searching: true,
+                    scrollY: "400px",
+                    scrollCollapse: true,
+                    scroller: true
                 });
             });
 
-            // Handle PDF Download
+            // PDF Download functionality
             $('#downloadBtn').click(function() {
-                // Download functionality will be added later using jsPDF library
-                alert("PDF Download feature is being developed.");
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text("Principal Logbook Report", 20, 20);
+                doc.autoTable({ html: '#logbookTable' });
+                doc.save('logbook_report.pdf');
             });
         });
     </script>
