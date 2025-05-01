@@ -55,14 +55,24 @@
     th {
       background-color: navy;
       color: white;
+      position: relative;
+    }
+
+    th select {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      border: none;
+      padding: 5px;
+      background-color: white;
+      color: black;
     }
 
     .filter-section {
       margin-bottom: 1rem;
       display: flex;
       gap: 10px;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: flex-end;
     }
 
     .filter-section select, .btn {
@@ -104,31 +114,7 @@
     <div class="card">
       <!-- Filter Section: placed inside the card -->
       <div class="filter-section">
-        <div>
-          <select id="teacherFilter">
-            <option value="">All Teachers</option>
-          </select>
-        </div>
-        <div>
-          <select id="monthFilter">
-            <option value="">All Months</option>
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-        </div>
-        <div>
-          <button class="btn" onclick="applyFilter()">Apply Filter</button>
-        </div>
+        <button class="btn" onclick="downloadPDF()">Download as PDF</button>
       </div>
 
       <!-- Table Section -->
@@ -152,41 +138,50 @@
       .then(res => res.json())
       .then(data => {
         rawData = data;
-        populateFilters(data);
         renderTable(data);  // Initially, render the full data
+        addFilterOptions(data);
       });
 
-    // Populate the teacher filter with unique names
-    function populateFilters(data) {
-      const teacherSet = new Set();
-      data.forEach(row => teacherSet.add(row["Teacher’s Name"]));
-      const teacherSelect = document.getElementById("teacherFilter");
-      teacherSet.forEach(name => {
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        teacherSelect.appendChild(option);
+    // Add filter options to each table header (like Google Sheets filter)
+    function addFilterOptions(data) {
+      const headers = Object.keys(data[0]);
+      const thead = document.getElementById("theadRow");
+      
+      const tr = document.createElement("tr");
+      headers.forEach(header => {
+        const th = document.createElement("th");
+        th.innerText = header;
+
+        // Create the filter dropdown inside the header
+        const select = document.createElement("select");
+        select.innerHTML = `<option value="">Filter by ${header}</option>`;
+        const uniqueValues = [...new Set(data.map(row => row[header]))];
+        uniqueValues.forEach(value => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+
+        select.addEventListener("change", () => filterTable(headers));
+        th.appendChild(select);
+        tr.appendChild(th);
       });
+      thead.appendChild(tr);
     }
 
-    // Apply the selected filters to the data and render the table
-    function applyFilter() {
-      const teacher = document.getElementById("teacherFilter").value;
-      const month = document.getElementById("monthFilter").value;
-
-      const filtered = rawData.filter(row => {
-        let teacherMatch = teacher ? row["Teacher’s Name"].trim().toLowerCase() === teacher.trim().toLowerCase() : true;
-        let monthMatch = true;
-        if (month && row.Date) {
-          const rowMonth = new Date(row.Date).getMonth() + 1;
-          monthMatch = rowMonth == month;
-        }
-        return teacherMatch && monthMatch;
+    // Filter the table rows based on selected values
+    function filterTable(headers) {
+      const filteredData = rawData.filter(row => {
+        return headers.every((header, index) => {
+          const selectedValue = document.querySelectorAll("th select")[index].value;
+          return selectedValue ? row[header] === selectedValue : true;
+        });
       });
-      renderTable(filtered);
+      renderTable(filteredData);
     }
 
-    // Render the filtered data in the table
+    // Render the table with filtered or all data
     function renderTable(data) {
       const thead = document.getElementById("theadRow");
       const tbody = document.getElementById("tbodyRows");
