@@ -1,88 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Alif Edu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+
+    body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f4f6f8;
+      background-color: #f2f2f2;
     }
 
     /* Sidebar */
     .sidebar {
       width: 250px;
-      background-color: #001f3f; /* Navy blue */
+      background-color: #001f3f; /* Navy Blue */
       height: 100vh;
       position: fixed;
       top: 0;
       left: 0;
       overflow-y: auto;
-      transition: left 0.3s ease;
+      transition: transform 0.3s ease;
       color: white;
       z-index: 1000;
     }
 
-    .sidebar .logo {
+    .sidebar .logo-container {
       text-align: center;
       padding: 20px;
       border-bottom: 1px solid #003366;
     }
 
-    .sidebar .logo img {
-      width: 120px;
+    .sidebar .logo-container img {
+      width: 100px;
       height: auto;
     }
 
-    .sidebar h2 {
-      color: goldenrod;
-      font-size: 18px;
+    .sidebar .logo-container h2 {
       margin-top: 10px;
+      color: #ffc107;
+      font-size: 22px;
     }
 
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar ul li {
+    .sidebar a {
+      display: block;
       padding: 15px 20px;
-      border-bottom: 1px solid #003366;
-    }
-
-    .sidebar ul li a {
       color: white;
       text-decoration: none;
-      display: block;
+      border-bottom: 1px solid #002b5e;
     }
 
-    .sidebar ul li:hover {
-      background-color: #003366;
+    .sidebar a:hover {
+      background-color: #ffc107;
+      color: black;
     }
 
     .logout-btn {
+      background-color: #ffc107;
+      color: black;
+      padding: 12px 20px;
+      display: block;
+      text-align: center;
+      text-decoration: none;
       margin: 20px;
-      background-color: goldenrod;
-      border: none;
-      padding: 10px;
-      width: calc(100% - 40px);
       border-radius: 5px;
-      font-weight: bold;
-      color: #000;
-      cursor: pointer;
     }
 
-    /* Top bar */
+    /* Topbar */
     .topbar {
       height: 60px;
       background-color: #001f3f;
       color: white;
-      padding: 0 20px;
       display: flex;
       align-items: center;
+      padding: 0 20px;
       justify-content: space-between;
       position: fixed;
       top: 0;
@@ -91,75 +87,80 @@
       z-index: 999;
     }
 
-    .hamburger {
-      font-size: 28px;
+    .menu-toggle {
+      font-size: 24px;
       cursor: pointer;
       display: none;
     }
 
-    /* Main */
+    .topbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar .logo img {
+      width: 30px;
+      height: auto;
+    }
+
+    .topbar .logo span {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffc107;
+    }
+
+    /* Main content */
     .main {
       margin-left: 250px;
       padding: 80px 20px 20px;
+      position: relative;
+      z-index: 1;
     }
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
     }
 
     .card {
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      text-align: center;
+      background-color: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       transition: 0.3s;
+      text-align: center;
+      font-weight: bold;
+      color: #001f3f;
+      border: 2px solid #ffc107;
     }
 
     .card:hover {
-      transform: translateY(-5px);
+      transform: scale(1.03);
+      background-color: #fff8e1;
     }
 
-    .card h3 {
-      color: #001f3f;
-    }
-
-    .card p {
-      color: #666;
-    }
-
-    .card a {
-      margin-top: 10px;
-      display: inline-block;
-      background-color: goldenrod;
-      color: #000;
-      padding: 8px 16px;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-
-    /* Responsive */
+    /* Responsive for mobile */
     @media (max-width: 768px) {
       .sidebar {
-        left: -250px;
+        transform: translateX(-100%);
       }
 
       .sidebar.active {
-        left: 0;
+        transform: translateX(0);
       }
 
       .topbar {
         left: 0;
       }
 
-      .hamburger {
-        display: block;
-      }
-
       .main {
         margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
       }
     }
   </style>
@@ -168,87 +169,59 @@
 
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
-    <div class="logo">
-      <img src="1.png" alt="Logo" />
-      <h2>Principal Panel</h2>
+    <div class="logo-container">
+      <img src="1.png" alt="Alif Edu Logo">
+      <h2>Alif Edu</h2>
     </div>
-    <ul>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">Teacher Attendance</a></li>
-      <li><a href="#">Student Attendance</a></li>
-      <li><a href="#">Logbook</a></li>
-      <li><a href="#">Class Timetable</a></li>
-      <li><a href="#">Teacher Details</a></li>
-      <li><a href="#">Student Details</a></li>
-      <li><a href="#">Weekly Report</a></li>
-    </ul>
-    <a href="index.html" class="logout-btn">Logout</a>
+    <a href="#">Teacher Attendance</a>
+    <a href="#">Student Attendance</a>
+    <a href="#">Log Book</a>
+    <a href="#">Timetable</a>
+    <a href="#">Teacher Details</a>
+    <a href="#">Student Details</a>
+    <a href="#">Weekly Report</a>
+    <a href="login.html" class="logout-btn">Logout</a>
   </div>
 
   <!-- Topbar -->
   <div class="topbar">
-    <span class="hamburger" onclick="toggleSidebar()">☰</span>
-    <h3>Welcome, Principal!</h3>
-  </div>
-
-  <!-- Main Content -->
-  <div class="main">
-    <div class="cards">
-      <div class="card">
-        <h3>Teacher Attendance</h3>
-        <p>View and mark teacher attendance.</p>
-        <a href="#">View</a>
-      </div>
-      <div class="card">
-        <h3>Student Attendance</h3>
-        <p>Manage student attendance records.</p>
-        <a href="#">View</a>
-      </div>
-      <div class="card">
-        <h3>Logbook</h3>
-        <p>View daily logbook by date.</p>
-        <a href="#">View</a>
-      </div>
-      <div class="card">
-        <h3>Class Timetable</h3>
-        <p>Manage and view class schedules.</p>
-        <a href="#">View</a>
-      </div>
-      <div class="card">
-        <h3>Teacher Details</h3>
-        <p>Access teacher info and contacts.</p>
-        <a href="#">View</a>
-      </div>
-      <div class="card">
-        <h3>Student Details</h3>
-        <p>Check and edit student records.</p>
-        <a href="#">View</a>
-      </div>
-      <div class="card">
-        <h3>Weekly Report</h3>
-        <p>Submit or check weekly updates.</p>
-        <a href="#">View</a>
-      </div>
+    <span class="menu-toggle" onclick="toggleSidebar()">☰</span>
+    <div class="logo">
+      <img src="logo.png" alt="Logo">
+      <span>Admin Dashboard</span>
     </div>
   </div>
 
- <script>
-  let sidebarOpen = false;
+  <!-- Main -->
+  <div class="main">
+    <div class="cards">
+      <div class="card">Teacher Attendance</div>
+      <div class="card">Student Attendance</div>
+      <div class="card">Log Book</div>
+      <div class="card">Timetable</div>
+      <div class="card">Teacher Details</div>
+      <div class="card">Student Details</div>
+      <div class="card">Weekly Report</div>
+    </div>
+  </div>
 
-  function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    sidebarOpen = !sidebarOpen;
-    sidebar.classList.toggle("active", sidebarOpen);
-  }
+  <!-- JavaScript -->
+  <script>
+    let sidebarOpen = false;
 
-  // Optional: Close sidebar if window is resized to large
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 768) {
-      document.getElementById("sidebar").classList.remove("active");
-      sidebarOpen = false;
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebarOpen = !sidebarOpen;
+      sidebar.classList.toggle("active", sidebarOpen);
     }
-  });
-</script>
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 768) {
+        document.getElementById("sidebar").classList.remove("active");
+        sidebarOpen = false;
+      }
+    });
+  </script>
 
 </body>
 </html>
