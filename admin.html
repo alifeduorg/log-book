@@ -210,14 +210,12 @@
 
   <!-- JS -->
   <script>
-    let sidebarOpen = false;
     const sidebar = document.getElementById("sidebar");
     const main = document.getElementById("main");
 
     function toggleSidebar() {
-      sidebarOpen = !sidebarOpen;
-      sidebar.classList.toggle("active", sidebarOpen);
-      main.classList.toggle("shifted", sidebarOpen);
+      sidebar.classList.toggle("active");
+      main.classList.toggle("shifted");
     }
 
     // Reset layout when resized back to desktop
@@ -225,7 +223,6 @@
       if (window.innerWidth > 768) {
         sidebar.classList.remove("active");
         main.classList.remove("shifted");
-        sidebarOpen = false;
       }
     });
   </script>
