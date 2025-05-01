@@ -21,12 +21,12 @@
       background-color: #001f3f;
       height: 100vh;
       position: fixed;
-      top: 0;
+      top: 60px; /* Added space to move it below the topbar */
       left: 0;
       overflow-y: auto;
       transition: transform 0.3s ease;
       color: white;
-      z-index: 1000;
+      z-index: 999; /* Ensure sidebar is below the topbar */
     }
 
     .sidebar .logo-container {
@@ -82,7 +82,7 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 1100; /* higher than sidebar */
+      z-index: 1100; /* Higher z-index to ensure it stays above sidebar */
     }
 
     .menu-toggle {
@@ -142,6 +142,7 @@
       .sidebar {
         transform: translateX(-100%);
         position: fixed;
+        top: 60px; /* Added space to move it below the topbar */
       }
 
       .sidebar.active {
@@ -174,7 +175,8 @@
 
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
-   
+    <div class="logo-container">
+      <img src="1.png" alt="Alif Edu Logo" />
       <h2>Alif Edu</h2>
     </div>
     <a href="#">Teacher Attendance</a>
@@ -184,7 +186,7 @@
     <a href="#">Teacher Details</a>
     <a href="#">Student Details</a>
     <a href="#">Weekly Report</a>
-    <a href="index.html" class="logout-btn">Logout</a>
+    <a href="login.html" class="logout-btn">Logout</a>
   </div>
 
   <!-- Topbar -->
@@ -192,7 +194,7 @@
     <span class="menu-toggle" onclick="toggleSidebar()">☰</span>
     <div class="logo">
       <img src="1.png" alt="Logo" />
-      <span>Admin's Dashboard</span>
+      <span>Admin Dashboard</span>
     </div>
   </div>
 
