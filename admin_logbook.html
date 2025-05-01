@@ -13,11 +13,38 @@
     }
 
     .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 1rem;
-      text-align: center;
       background-color: navy;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       font-weight: bold;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 35px;
+    }
+
+    .btn {
+      background-color: goldenrod;
+      color: navy;
+      border: none;
+      padding: 10px 15px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #ffcc00;
     }
 
     .container {
@@ -28,34 +55,38 @@
       background-color: white;
       border-radius: 15px;
       padding: 1rem;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
       margin-top: 1rem;
+      font-size: 13px;
     }
 
     th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
+      border: 1px solid #ddd;
+      padding: 10px;
       text-align: left;
-      position: relative;
     }
 
     th {
-      background-color: navy;
+      background-color: #003366;
       color: white;
+      position: relative;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
     }
 
     .filter-icon {
       cursor: pointer;
       font-size: 14px;
       float: right;
-      margin-left: 5px;
+      margin-left: 8px;
     }
 
     .filter-menu {
@@ -75,37 +106,32 @@
       padding: 5px;
     }
 
-    .btn {
-      background-color: goldenrod;
-      color: navy;
-      border: none;
-      padding: 10px 15px;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-
-    .btn:hover {
-      background-color: #ffcc00;
-    }
-
-    @media(max-width: 768px){
+    @media (max-width: 768px) {
       table {
-        font-size: 10px;
+        font-size: 11px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
   <div class="topbar">
-    <img src="1.png" alt="Alif Logo" height="30" style="vertical-align: middle;">
-    Logbook Report - Principal View
+    <div class="logo">
+      <img src="1.png" alt="Alif Logo" />
+      <span>Principal Logbook Report</span>
+    </div>
+    <div>
+      <button class="btn" onclick="goToDashboard()">🏠 Dashboard</button>
+      <button class="btn" onclick="downloadPDF()">📄 Download PDF</button>
+    </div>
   </div>
 
   <div class="container">
     <div class="card">
-      <button class="btn" onclick="downloadPDF()">Download PDF</button>
       <table id="logbookTable">
         <thead id="theadRow"></thead>
         <tbody id="tbodyRows"></tbody>
@@ -118,7 +144,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec"; // Replace with your script URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec"; // Replace with actual Google Apps Script URL
     let allData = [];
     let currentHeaders = [];
 
@@ -148,7 +174,6 @@
         icon.onclick = () => showFilterMenu(header, idx, icon);
 
         th.appendChild(icon);
-        th.style.position = 'relative';
         tr.appendChild(th);
       });
       thead.appendChild(tr);
@@ -218,6 +243,11 @@
         styles: { fontSize: 8 }
       });
       doc.save("Logbook_Report.pdf");
+    }
+
+    // Dashboard redirect
+    function goToDashboard() {
+      window.location.href = "admin.html"; // Change to your dashboard URL
     }
   </script>
 </body>
