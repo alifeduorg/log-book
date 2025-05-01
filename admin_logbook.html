@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Logbook Report - Alif Edu</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, navy, goldenrod);
+      background-color: navy;
       color: white;
     }
 
     .topbar {
-      background-color: goldenrod;
-      color: navy;
+      background-color: navy;
       padding: 1rem;
       text-align: center;
+      color: white;
       font-size: 1.5rem;
       font-weight: bold;
     }
@@ -26,15 +28,40 @@
     }
 
     .container {
-      padding: 2rem;
+      padding: 1rem;
+    }
+
+    .filter-section {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-section select, .btn {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .btn {
+      background-color: goldenrod;
+      color: navy;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #daa520;
     }
 
     .card {
-      background: white;
+      background-color: white;
       color: black;
-      border-radius: 15px;
+      border-radius: 10px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-      padding: 2rem;
+      padding: 1rem;
       overflow-x: auto;
     }
 
@@ -47,7 +74,7 @@
     th, td {
       border: 1px solid #ddd;
       padding: 8px;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     th {
@@ -55,75 +82,129 @@
       color: white;
     }
 
-    .btn {
-      background-color: goldenrod;
-      color: navy;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-
-    .btn:hover {
-      background-color: #d4a017;
-    }
-
     .back-btn {
       margin-top: 20px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .filter-section {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <div class="topbar">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Alif.svg/800px-Alif.svg.png" class="logo" alt="Alif Logo">
-    Logbook Viewer - Principal Dashboard
+    Logbook Report - Principal View
   </div>
 
   <div class="container">
-    <button class="btn" onclick="downloadPDF()">Download as PDF</button>
-    <div class="card" id="logbookContainer">
-      <h3>Logbook Records</h3>
+    <div class="filter-section">
+      <select id="teacherFilter">
+        <option value="">All Teachers</option>
+      </select>
+      <select id="monthFilter">
+        <option value="">All Months</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+      <button class="btn" onclick="applyFilter()">Apply Filter</button>
+      <button class="btn" onclick="downloadPDF()">Download PDF</button>
+    </div>
+
+    <div class="card">
       <table id="logbookTable">
         <thead id="theadRow"></thead>
         <tbody id="tbodyRows"></tbody>
       </table>
     </div>
+
     <button class="btn back-btn" onclick="goBack()">← Back to Dashboard</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec"; // e.g., https://script.google.com/macros/s/AKfycbxxxxxx/exec
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec";
+    let rawData = [];
 
     fetch(WEB_APP_URL)
       .then(res => res.json())
       .then(data => {
-        const headers = Object.keys(data[0]);
-        const thead = document.getElementById("theadRow");
-        const tbody = document.getElementById("tbodyRows");
-
-        // Add table header
-        const headerRow = document.createElement("tr");
-        headers.forEach(h => {
-          const th = document.createElement("th");
-          th.innerText = h;
-          headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-
-        // Add table rows
-        data.forEach(row => {
-          const tr = document.createElement("tr");
-          headers.forEach(h => {
-            const td = document.createElement("td");
-            td.innerText = row[h];
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        });
+        rawData = data;
+        populateFilters(data);
+        renderTable(data);
       });
+
+    function populateFilters(data) {
+      const teacherSet = new Set();
+      data.forEach(row => teacherSet.add(row["Teacher’s Name"]));
+      const teacherSelect = document.getElementById("teacherFilter");
+      teacherSet.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        teacherSelect.appendChild(option);
+      });
+    }
+
+    function applyFilter() {
+      const teacher = document.getElementById("teacherFilter").value;
+      const month = document.getElementById("monthFilter").value;
+
+      const filtered = rawData.filter(row => {
+        let teacherMatch = teacher ? row["Teacher’s Name"] === teacher : true;
+        let monthMatch = true;
+        if (month && row.Date) {
+          const rowMonth = new Date(row.Date).getMonth() + 1;
+          monthMatch = rowMonth == month;
+        }
+        return teacherMatch && monthMatch;
+      });
+      renderTable(filtered);
+    }
+
+    function renderTable(data) {
+      const thead = document.getElementById("theadRow");
+      const tbody = document.getElementById("tbodyRows");
+      thead.innerHTML = "";
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="100%">No data found</td></tr>';
+        return;
+      }
+
+      const headers = Object.keys(data[0]);
+      const tr = document.createElement("tr");
+      headers.forEach(h => {
+        const th = document.createElement("th");
+        th.innerText = h;
+        tr.appendChild(th);
+      });
+      thead.appendChild(tr);
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        headers.forEach(h => {
+          const td = document.createElement("td");
+          td.innerText = row[h];
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
 
     function goBack() {
       window.history.back();
@@ -131,12 +212,12 @@
 
     function downloadPDF() {
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.text("Logbook Report", 10, 10);
-      doc.autoTable({ html: '#logbookTable' });
-      doc.save("logbook_report.pdf");
+      const doc = new jsPDF('l', 'pt', 'a4');
+      doc.setFontSize(14);
+      doc.text("Logbook Report", 40, 30);
+      doc.autoTable({ html: '#logbookTable', theme: 'grid', startY: 50, styles: { fontSize: 8 } });
+      doc.save("Logbook_Report.pdf");
     }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </body>
 </html>
