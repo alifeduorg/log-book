@@ -31,7 +31,7 @@
     .logo {
       height: 50px;
     }
-    .dashboard-button {
+    .dashboard-button, .pdf-button {
       background-color: #ffcc00; /* Golden yellow */
       border: none;
       color: #000;
@@ -40,8 +40,9 @@
       cursor: pointer;
       font-weight: bold;
       box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+      margin-left: 10px;
     }
-    .dashboard-button:hover {
+    .dashboard-button:hover, .pdf-button:hover {
       background-color: #ffd700;
     }
     table.dataTable thead th {
@@ -55,7 +56,10 @@
   <div class="container">
     <div class="top-bar">
       <img src="1.png" alt="Alif Edu Logo" class="logo">
-      <button class="dashboard-button" onclick="window.location.href='dashboard.html'">Go to Dashboard</button>
+      <div>
+        <button class="dashboard-button" onclick="window.location.href='admin.html'">Go to Dashboard</button>
+        <button class="pdf-button" id="downloadPdf">Download PDF</button>
+      </div>
     </div>
 
     <table id="logbookTable" class="display nowrap" style="width:100%">
@@ -91,11 +95,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
   <script>
     const sheetURL = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec'; // Replace this with your actual script URL
+    let tableInstance;
 
     fetch(sheetURL)
       .then(response => response.json())
       .then(data => {
-        $('#logbookTable').DataTable({
+        tableInstance = $('#logbookTable').DataTable({
           data: data,
           columns: [
             { data: 'Timestamp' },
@@ -114,29 +119,56 @@
             { data: 'What type of Work' },
             { data: 'Upload Class Notification Message' },
             { data: "Anything you'd like to share?" }
-          ],
-          dom: 'Bfrtip',
-          buttons: [
-            {
-              extend: 'pdfHtml5',
-              text: 'Download PDF',
-              orientation: 'landscape',
-              pageSize: 'A3',
-              className: 'dashboard-button',
-              customize: function(doc) {
-                doc.content.splice(0, 0, {
-                  alignment: 'center',
-                  image: 'https://i.ibb.co/ChXL9WL/alif-logo.png',
-                  width: 100,
-                  margin: [0, 0, 0, 20]
-                });
-                doc.styles.tableHeader.fontSize = 10;
-                doc.defaultStyle.fontSize = 8;
-              }
-            }
           ]
         });
       });
+
+    document.getElementById("downloadPdf").addEventListener("click", function () {
+      const doc = new pdfMake.createPdf({
+        content: [
+          {
+            image: 'https://i.ibb.co/ChXL9WL/alif-logo.png',
+            width: 100,
+            alignment: 'center',
+            margin: [0, 0, 0, 20]
+          },
+          {
+            text: 'Logbook Report',
+            style: 'header',
+            alignment: 'center',
+            margin: [0, 0, 0, 20]
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: Array(16).fill('*'),
+              body: [
+                [
+                  'Timestamp', 'Date', "Teacher's Name", 'Staff ID', 'Program', 'Class', 'Student Name',
+                  'Subjects', 'Class In', 'Class Duration', 'What did you teach today?', 'Student Engagement',
+                  'Homework or Tasks Given?', 'What type of Work', 'Class Notification Message', "Anything you'd like to share?"
+                ]
+              ].concat(
+                tableInstance.rows().data().toArray().map(row => [
+                  row['Timestamp'], row['Date'], row["Teacher's Name"], row['Staff ID'], row['Program'], row['Class'],
+                  row['Student Name'], row['Subjects'], row['Class In'], row['Class Duration'],
+                  row['What did you teach today?'], row['Student Engagement'], row['Homework or Tasks Given?'],
+                  row['What type of Work'], row['Upload Class Notification Message'], row["Anything you'd like to share?"]
+                ])
+              )
+            },
+            layout: 'lightHorizontalLines'
+          }
+        ],
+        styles: {
+          header: {
+            fontSize: 16,
+            bold: true
+          }
+        }
+      });
+      doc.download("Logbook_Report.pdf");
+    });
   </script>
 </body>
 </html>
