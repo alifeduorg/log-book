@@ -1,141 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alif Edu Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       margin: 0;
-      background: navy;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(145deg, #0a0f3c, #10194e);
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      color: #fff;
     }
 
-    .login-card {
-      background: white;
-      padding: 40px 30px;
+    .login-box {
+      background: #0f1a4b;
       border-radius: 20px;
-      box-shadow: 0 15px 25px rgba(0,0,0,0.5);
-      max-width: 400px;
-      width: 100%;
+      box-shadow: 8px 8px 20px #080c26, -8px -8px 20px #162466;
+      padding: 40px;
+      width: 350px;
       text-align: center;
-      transform: rotateY(3deg);
-      transition: all 0.3s ease-in-out;
+      transform: perspective(1000px) rotateY(0deg);
     }
 
-    .login-card:hover {
-      transform: rotateY(0deg);
-      box-shadow: 0 20px 30px rgba(0,0,0,0.6);
+    .login-box img {
+      width: 100px;
+      margin-bottom: 15px;
     }
 
-    .logo {
-      width: 80px;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      color: navy;
-      margin-bottom: 20px;
+    .login-box h2 {
+      margin-bottom: 25px;
+      color: #ffcc00;
     }
 
     input, select {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
+      border: none;
       border-radius: 10px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
+      background: #1a255f;
+      color: white;
+      font-size: 1rem;
+      box-shadow: inset 2px 2px 6px #0a0f3c, inset -2px -2px 6px #1e2b6e;
     }
 
-    .login-btn {
-      background-color: goldenrod;
-      color: white;
-      border: none;
+    button {
+      background-color: #ffcc00;
+      color: #0f1a4b;
       padding: 12px;
+      border: none;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
       width: 100%;
+      font-weight: bold;
+      transition: 0.3s ease;
+      margin-top: 10px;
     }
 
-    .login-btn:hover {
-      background-color: darkgoldenrod;
+    button:hover {
+      background-color: #e6b800;
     }
 
     .footer {
       margin-top: 20px;
-      color: white;
-      font-size: 14px;
+      font-size: 0.9rem;
+      color: #ccc;
     }
 
-    @media (max-width: 500px) {
-      .login-card {
-        padding: 25px 20px;
-      }
+    .error {
+      color: #ff6961;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <form class="login-card" id="loginForm">
-    <img src="1.png" class="logo" alt="Alif Edu Logo" />
 
-    <h2>Alif Edu Login</h2>
+  <div class="login-box">
+    <img src="1.png" alt="Alif Edu Logo" />
+    <h2>Staff Login</h2>
 
-    <input type="text" name="staffID" placeholder="Staff ID" required />
-    <input type="password" name="password" placeholder="Password" required />
-    
-    <select name="role" required>
-      <option value="" disabled selected>Select Role</option>
-      <option value="admin">Admin</option>
-      <option value="mentor">Mentor</option>
-      <option value="teacher">Teacher</option>
+    <input type="text" id="staffId" placeholder="Staff ID" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <select id="role">
+      <option value="">Select Role</option>
+      <option value="Admin">Admin</option>
+      <option value="Mentor">Mentor</option>
+      <option value="Teacher">Teacher</option>
     </select>
 
-    <button type="submit" class="login-btn">Login</button>
+    <button onclick="handleLogin()">Login</button>
 
-    <div class="footer">Powered by Alif Edu</div>
-  </form>
+    <div class="error" id="errorMsg"></div>
+
+    <div class="footer">⚡ Powered by Alif Edu ⚡</div>
+  </div>
 
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+    function handleLogin() {
+      const staffId = document.getElementById('staffId').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const role = document.getElementById('role').value;
+      const errorMsg = document.getElementById('errorMsg');
 
-      const form = e.target;
-      const staffID = form.staffID.value.trim();
-      const password = form.password.value.trim();
-      const role = form.role.value;
+      if (!staffId || !password || !role) {
+        errorMsg.textContent = "Please fill in all fields.";
+        return;
+      }
 
-      fetch("https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec", {
-        method: "POST",
-        body: JSON.stringify({ staffID, password }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.role === role) {
-          if (role === "admin") {
-            window.location.href = "dashboard.html";
-          } else if (role === "mentor") {
-            window.location.href = "dashboard.html";
-          } else if (role === "teacher") {
-            window.location.href = "dashboard.html";
+      // Replace with actual Apps Script Web App URL
+      const scriptURL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec";
+
+      fetch(`${scriptURL}?staffId=${staffId}&password=${password}&role=${role}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = data.redirectURL;
+          } else {
+            errorMsg.textContent = "Invalid credentials. Please try again.";
           }
-        } else {
-          alert("Invalid credentials or role mismatch.");
-        }
-      })
-      .catch(err => {
-        alert("Login failed. Please try again.");
-        console.error(err);
-      });
-    });
+        })
+        .catch(() => {
+          errorMsg.textContent = "Error connecting to server.";
+        });
+    }
   </script>
+
 </body>
 </html>
