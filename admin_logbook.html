@@ -3,85 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Principal Logbook Dashboard</title>
-    <!-- Include jQuery and DataTables CSS/JS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- Added jsPDF for PDF download -->
-
+    <title>Logbook</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.11.5/media/css/jquery.dataTables.min.css">
     <style>
         body {
+            background-color: #001f3d;
+            color: white;
             font-family: Arial, sans-serif;
-            background-color: #001f3d; /* Navy Blue */
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
         }
         .container {
-            max-width: 1200px;
-            margin: 20px auto;
             padding: 20px;
+        }
+        .table-container {
+            margin-top: 20px;
             background-color: #ffffff;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #ffd700; /* Golden Yellow */
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .btn {
-            background-color: #ffd700;
-            color: #001f3d;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        .btn:hover {
-            background-color: #e6c200;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            overflow-x: auto;
-            display: block;
         }
         th, td {
-            padding: 15px;
-            text-align: left;
+            padding: 12px;
+            text-align: center;
             border: 1px solid #ddd;
-            word-wrap: break-word;
         }
         th {
-            background-color: #001f3d;
-            color: #ffffff;
+            background-color: #f1a900;
         }
-        #logbookTable_wrapper {
-            overflow-x: auto;
-            max-height: 500px;
+        td {
+            background-color: #f9f9f9;
         }
-        .dataTables_scrollBody {
-            max-height: 400px;
-            overflow-y: scroll;
-        }
-        .filter-icon {
+        button {
+            background-color: #f1a900;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #e08700;
+        }
+        #logbookTable_filter input {
+            width: 200px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Principal Logbook Dashboard</h1>
+        <button onclick="goToDashboard()">Back to Dashboard</button>
 
-        <button class="btn" onclick="window.location.href='admin.html'">Back to Dashboard</button>
-
-        <!-- Logbook Table -->
-        <div id="logbookTable_wrapper">
+        <div class="table-container">
             <table id="logbookTable">
                 <thead>
                     <tr>
@@ -103,51 +81,73 @@
                         <th>Anything you'd like to share?</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="logbookData"></tbody>
             </table>
-        </div>
 
-        <br>
-        <button class="btn" id="downloadBtn">Download PDF</button>
+            <button onclick="downloadPDF()">Download as PDF</button>
+        </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables@1.11.5/media/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip/dist/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <script>
-        // Replace this URL with the web app URL from Google Apps Script
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec';
+        // URL of the Google Apps Script Web App
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec'; // Replace with your actual URL
 
-        $(document).ready(function() {
-            // Fetch data from Google Sheets
+        // Fetch data from Google Sheet
+        function fetchLogbookData() {
             $.getJSON(scriptUrl, function(data) {
-                // Fill the table with data
-                data.forEach(function(row) {
-                    var tr = $('<tr></tr>');
-                    for (var key in row) {
-                        tr.append('<td>' + row[key] + '</td>');
-                    }
-                    $('#logbookTable tbody').append(tr);
+                let tableContent = '';
+                data.forEach((row) => {
+                    tableContent += `<tr>
+                        <td>${row['Timestamp']}</td>
+                        <td>${row['Date']}</td>
+                        <td>${row['Teacher’s Name']}</td>
+                        <td>${row['Staff ID']}</td>
+                        <td>${row['Program']}</td>
+                        <td>${row['Class']}</td>
+                        <td>${row['Student Name']}</td>
+                        <td>${row['Subjects']}</td>
+                        <td>${row['Class In']}</td>
+                        <td>${row['Class Duration']}</td>
+                        <td>${row['What did you teach today?']}</td>
+                        <td>${row['Student Engagement']}</td>
+                        <td>${row['Homework or Tasks Given?']}</td>
+                        <td>${row['What type of Work']}</td>
+                        <td>${row['Upload Class Notification Message']}</td>
+                        <td>${row['Anything you\'d like to share?']}</td>
+                    </tr>`;
                 });
-
-                // Initialize DataTable with scroll and no horizontal scroll
-                $('#logbookTable').DataTable({
-                    paging: true,
-                    ordering: true,
-                    searching: true,
-                    scrollY: "400px",
-                    scrollCollapse: true,
-                    scroller: true
-                });
+                $('#logbookData').html(tableContent);
+                $('#logbookTable').DataTable(); // Initialize DataTable for sorting, searching, etc.
             });
+        }
 
-            // PDF Download functionality
-            $('#downloadBtn').click(function() {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                doc.text("Principal Logbook Report", 20, 20);
-                doc.autoTable({ html: '#logbookTable' });
-                doc.save('logbook_report.pdf');
-            });
+        // Download Logbook Data as PDF
+        function downloadPDF() {
+            const doc = new jsPDF();
+            doc.setFontSize(12);
+            doc.text('Logbook Report', 20, 20);
+
+            let table = document.querySelector("#logbookTable");
+            doc.autoTable({ html: table, startY: 30 });
+
+            doc.save('logbook-report.pdf');
+        }
+
+        // Redirect to Dashboard (customize this function as per your requirement)
+        function goToDashboard() {
+            window.location.href = "dashboard.html"; // Update with your actual dashboard URL
+        }
+
+        // Load logbook data when page is loaded
+        $(document).ready(function() {
+            fetchLogbookData();
         });
     </script>
-
 </body>
 </html>
+ 
