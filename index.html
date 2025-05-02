@@ -83,7 +83,7 @@
       const password = document.getElementById("password").value;
       const role = document.getElementById("role").value;
 
-      const url = `https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec?staffId=${encodeURIComponent(staffId)}&password=${encodeURIComponent(password)}&role=${role}`;
+      const url = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec?staffId=${encodeURIComponent(staffId)}&password=${encodeURIComponent(password)}&role=${role}`;
 
       const res = await fetch(url);
       const data = await res.json();
