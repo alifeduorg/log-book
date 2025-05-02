@@ -76,7 +76,7 @@
       .then(response => response.text())
       .then(result => {
         if (result === "Login successful") {
-          window.location.href = "dashboard.html"; // Replace with actual dashboard URL
+          window.location.href = "admin.html"; // Replace with actual dashboard URL
         } else {
           document.getElementById("error-msg").textContent = result;
         }
