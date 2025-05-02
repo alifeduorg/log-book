@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Alif Edu Login</title>
   <style>
     body {
@@ -23,7 +23,6 @@
       padding: 40px;
       width: 350px;
       text-align: center;
-      transform: perspective(1000px) rotateY(0deg);
     }
 
     .login-box img {
@@ -81,7 +80,7 @@
 
   <div class="login-box">
     <img src="1.png" alt="Alif Edu Logo" />
-    <h2>Staff   Login</h2>
+    <h2>Staff Login</h2>
 
     <input type="text" id="staffId" placeholder="Staff ID" />
     <input type="password" id="password" placeholder="Password" />
@@ -94,43 +93,39 @@
     </select>
 
     <button onclick="handleLogin()">Login</button>
-
     <div class="error" id="errorMsg"></div>
 
     <div class="footer">⚡ Powered by Alif Edu ⚡</div>
   </div>
 
- <script>
-  function handleLogin() {
-    const staffId = document.getElementById('staffId').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const role = document.getElementById('role').value;
+  <script>
+    function handleLogin() {
+      const staffId = document.getElementById('staffId').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const role = document.getElementById('role').value.trim();
 
-    document.getElementById('errorMsg').textContent = "";
-
-    fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {
-      method: 'POST',
-      body: new URLSearchParams({
-        staffId,
-        password,
-        role
+      fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {
+        method: 'POST',
+        body: new URLSearchParams({
+          staffId,
+          password,
+          role
+        })
       })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        window.location.href = data.redirectURL;
-      } else {
-        document.getElementById('errorMsg').textContent = "Invalid credentials. Please try again.";
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById('errorMsg').textContent = "Something went wrong. Please try again.";
-    });
-  }
-</script>
-
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = data.redirectURL;
+        } else {
+          document.getElementById('errorMsg').innerText = "Invalid credentials. Please try again.";
+        }
+      })
+      .catch(err => {
+        console.error('Login error:', err);
+        document.getElementById('errorMsg').innerText = "Server error. Please contact support.";
+      });
+    }
+  </script>
 
 </body>
 </html>
