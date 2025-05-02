@@ -1,133 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Login - Alif Edu</title>
-  <style>
-    body {
-      background: #000050
-;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .card {
-      background: white;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-      text-align: center;
-      width: 320px;
-    }
-
-    .card img {
-      width: 80px;
-      margin-bottom: 20px;
-    }
-
-    .card h2 {
-      margin-bottom: 25px;
-      color: navy;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: goldenrod;
-      border: none;
-      border-radius: 8px;
-      color: navy;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-      background-color: #ffcc33;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Alif Edu</title>
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+        .login-card input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .login-card button {
+            background-color: navy;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .login-card button:hover {
+            background-color: goldenrod;
+        }
+        .logo {
+            width: 50px;
+            margin-bottom: 20px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            color: navy;
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="card">
-    <img src="1.png" alt="Alif Edu Logo"> <!-- Add your logo path -->
-    <h2>Alif Edu Login</h2>
+<div class="login-card">
+    <img src="1.png" alt="Alif Edu Logo" class="logo">
+    <div class="header">Welcome Back!</div>
+    <form id="login-form">
+        <input type="text" id="staff-id" placeholder="Staff ID" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <div class="footer">Powered by Alif Edu</div>
+</div>
 
-    <input type="text" id="staffId" placeholder="Staff ID" required />
-    <input type="password" id="password" placeholder="Password" required />
+<script>
+    document.getElementById("login-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        var staffId = document.getElementById("staff-id").value;
+        var password = document.getElementById("password").value;
 
-    <select id="role">
-      <option value="">-- Select Role --</option>
-      <option value="admin">Admin</option>
-      <option value="principal">Principal</option>
-      <option value="teacher">Teacher</option>
-      <option value="mentor">Mentor</option>
-    </select>
-
-    <button onclick="login()">Login</button>
-  </div>
-
-  <script>
-    async function login() {
-      const staffId = document.getElementById("staffId").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const role = document.getElementById("role").value;
-
-      if (!staffId || !password || !role) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      const url = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec"; // replace with your Apps Script web app URL
-
-      const formData = new FormData();
-      formData.append("staffId", staffId);
-      formData.append("password", password);
-      formData.append("role", role);
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          body: formData
+        // Send login data to Google Apps Script
+        fetch("https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "staffId=" + staffId + "&password=" + password
+        })
+        .then(response => response.text())
+        .then(result => {
+            if(result === "Login successful") {
+                window.location.href = "admin.html";  // Redirect to next page on successful login
+            } else {
+                alert("Invalid Staff ID or Password");
+            }
+        })
+        .catch(error => {
+            alert("An error occurred, please try again.");
         });
-
-        const data = await response.json();
-
-        if (data.status === "success") {
-          sessionStorage.setItem("staffId", staffId);
-          sessionStorage.setItem("role", role);
-
-          if (role === "admin") {
-            window.location.href = "admin.html";
-          } else if (role === "principal") {
-            window.location.href = "admin.html";
-          } else if (role === "teacher") {
-            window.location.href = "dashboard.html";
-          } else if (role === "mentor") {
-            window.location.href = "dashboard.html";
-          }
-        } else {
-          alert("Login failed. Please check credentials.");
-        }
-      } catch (err) {
-        alert("Error: " + err);
-      }
-    }
-  </script>
+    });
+</script>
 
 </body>
 </html>
