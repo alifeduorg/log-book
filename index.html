@@ -67,40 +67,43 @@
 </div>
 
 <script>
-  const webAppUrl = "https://script.google.com/macros/s/AKfycbycmQxO8mPgxXoaGBFvpybamBhxC8JF3UGyEZvlFSm-1Arw4xPZJhjQ9HUX2NvUFR5s0Q/exec"; // Replace with your actual Web App URL
+  const webAppUrl = "https://script.google.com/macros/s/AKfycbycmQxO8mPgxXoaGBFvpybamBhxC8JF3UGyEZvlFSm-1Arw4xPZJhjQ9HUX2NvUFR5s0Q/exec"; // Replace with your deployed Web App URL
 
   document.getElementById("login-form").addEventListener("submit", function(e) {
     e.preventDefault();
-
+    
     const staffId = document.getElementById("staffId").value.trim();
     const password = document.getElementById("password").value.trim();
-    const errorMsg = document.getElementById("error-msg");
-
+    
     fetch(webAppUrl, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "staffId=" + encodeURIComponent(staffId) + "&password=" + encodeURIComponent(password)
     })
     .then(res => res.text())
-    .then(role => {
-      if (role === "admin") {
+    .then(result => {
+      console.log("Server response: ", result);
+      
+      // Check role and redirect
+      if (result === "admin") {
         window.location.href = "admin.html";
-      } else if (role === "principal") {
+      } else if (result === "principal") {
         window.location.href = "admin.html";
-      } else if (role === "teacher") {
+      } else if (result === "teacher") {
         window.location.href = "dashboard.html";
-      } else if (role === "mentor") {
+      } else if (result === "mentor") {
         window.location.href = "dashboard.html";
       } else {
-        errorMsg.textContent = "Invalid Staff ID or Password";
+        document.getElementById("error-msg").textContent = "Invalid Staff ID or Password";
       }
     })
     .catch(err => {
-      console.error("Login Error:", err);
-      errorMsg.textContent = "Something went wrong. Try again.";
+      console.error("Error during login request:", err);
+      document.getElementById("error-msg").textContent = "Something went wrong, please try again.";
     });
   });
 </script>
+
 
 </body>
 </html>
