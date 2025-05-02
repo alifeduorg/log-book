@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      background: navy;
+      background:Classic Navy	;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
@@ -25,7 +25,7 @@
     }
 
     .logo {
-      width: 80px;
+      width: 10px;
       margin-bottom: 20px;
     }
 
@@ -63,8 +63,8 @@
 </head>
 <body>
   <div class="card">
-    <img src="1.png" class="logo" alt="Alif Edu Logo">
-    <h2>Login</h2>
+    <img src="1.PNG" class="logo" alt="Alif Edu Logo">
+    <h2>Staff Login</h2>
     <input type="text" id="staffId" placeholder="Staff ID" required>
     <input type="password" id="password" placeholder="Password" required>
     <select id="role">
@@ -83,20 +83,20 @@
       const password = document.getElementById("password").value;
       const role = document.getElementById("role").value;
 
-      const url = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec?staffId=${encodeURIComponent(staffId)}&password=${encodeURIComponent(password)}&role=${role}`;
+      const url = `https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec?staffId=${encodeURIComponent(staffId)}&password=${encodeURIComponent(password)}&role=${role}`;
 
       const res = await fetch(url);
       const data = await res.json();
 
-     if (data.status === "success") {
+    if (data.status === "success") {
   if (role === "admin") {
     window.location.href = "admin.html";
   } else if (role === "principal") {
-    window.location.href = "admin.html";
+    window.location.href = "admin.html.html";
   } else if (role === "teacher") {
     window.location.href = "dashboard.html";
   } else if (role === "mentor") {
-    window.location.href = "dashboard.html";
+    window.location.href = "-dashboard.html";
   } else {
     alert("Invalid role selected.");
   }
