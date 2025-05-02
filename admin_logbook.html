@@ -2,86 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Principal Logbook Dashboard</title>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <title>Logbook Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     body {
-      background-color: #0b1d3a; /* Navy Blue */
-      color: #000;
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4f8;
     }
-    .container {
-      background: #fff;
-      color: #000;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .top-bar {
+
+    header {
+      background-color: #001f3f;
+      color: white;
+      padding: 10px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
-    .logo {
-      height: 50px;
+
+    header img {
+      height: 40px;
     }
-    .btn {
-      background-color: #f7c400; /* Golden Yellow */
+
+    .dashboard-btn {
+      background-color: #ffc107;
+      color: #001f3f;
       border: none;
-      color: #000;
-      padding: 10px 15px;
-      border-radius: 5px;
-      font-weight: bold;
+      padding: 8px 16px;
+      font-weight: 600;
+      border-radius: 6px;
       cursor: pointer;
-      transition: 0.3s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
-    .btn:hover {
-      background-color: #ddb200;
+
+    .filter-bar {
+      background: white;
+      margin: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
     }
-    table.dataTable thead .sorting:after,
-    table.dataTable thead .sorting_asc:after,
-    table.dataTable thead .sorting_desc:after {
-      color: #000;
+
+    .filter-bar input, .filter-bar select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      flex: 1;
     }
-    table.dataTable th, table.dataTable td {
-      white-space: nowrap;
+
+    table {
+      width: 95%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      overflow: hidden;
     }
-    .dataTables_wrapper .dataTables_filter {
-      float: right;
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #001f3f;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .filter-icon {
+      font-size: 20px;
+      color: #001f3f;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <!-- Replace the src with the direct URL where you uploaded the logo -->
-  <img src="1.png" alt="Alif Logo" class="logo">
-  <button class="btn" onclick="window.location.href='admin.html'">Go to Dashboard</button>
-</div>
+  <header>
+    <img src="1.png" alt="Logo">
+    <button class="dashboard-btn" onclick="goToDashboard()">Dashboard</button>
+  </header>
 
-<div class="container">
-  <h2>Principal Logbook Report</h2>
-  <table id="logbookTable" class="display nowrap" style="width:100%">
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search by any keyword..." onkeyup="filterTable()">
+    <select id="teacherFilter" onchange="filterTable()">
+      <option value="">Filter by Teacher</option>
+    </select>
+    <i class="fas fa-filter filter-icon"></i>
+  </div>
+
+  <table id="logbookTable">
     <thead>
       <tr>
         <th>Timestamp</th>
         <th>Date</th>
-        <th>Teacher's Name</th>
+        <th>Teacher’s Name</th>
         <th>Staff ID</th>
         <th>Program</th>
         <th>Class</th>
@@ -97,83 +126,63 @@
         <th>Anything you'd like to share?</th>
       </tr>
     </thead>
+    <tbody id="logbookBody">
+      <!-- Fetched data will go here -->
+    </tbody>
   </table>
-</div>
 
-<script>
-$(document).ready(function() {
-  const sheetURL = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec'; // Replace with your Google Apps Script URL
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec'; // Replace with your Apps Script web app URL
 
-  fetch(sheetURL)
-    .then(res => res.json())
-    .then(data => {
-      $('#logbookTable').DataTable({
-        data: data,
-        columns: [
-          { data: 'Timestamp' },
-          { data: 'Date' },
-          { data: "Teacher's Name" },
-          { data: 'Staff ID' },
-          { data: 'Program' },
-          { data: 'Class' },
-          { data: 'Student Name' },
-          { data: 'Subjects' },
-          { data: 'Class In' },
-          { data: 'Class Duration' },
-          { data: 'What did you teach today?' },
-          { data: 'Student Engagement' },
-          { data: 'Homework or Tasks Given?' },
-          { data: 'What type of Work' },
-          { data: 'Upload Class Notification Message' },
-          { data: "Anything you'd like to share?" }
-        ],
-        dom: 'Bfrtip',
-        buttons: [
-          {
-            extend: 'pdfHtml5',
-            text: 'Download PDF',
-            className: 'btn',
-            title: 'Alif Edu - Logbook Report',
-            customize: function (doc) {
-              doc.styles.tableHeader.alignment = 'left';
-              doc.styles.title = {
-                alignment: 'center',
-                fontSize: 18,
-                bold: true,
-                margin: [0, 0, 0, 15]
-              };
-              doc.content.splice(0, 0, {
-                image: '1.png', // Replace with direct URL for your logo
-                width: 60,
-                alignment: 'left',
-                margin: [0, 0, 0, 10]
-              });
-              doc.pageMargins = [20, 60, 20, 30];
-              doc.defaultStyle.fontSize = 9;
-            }
-          }
-        ],
-        scrollX: true,
-        responsive: true,
-        initComplete: function () {
-          this.api().columns().every(function () {
-            var column = this;
-            var select = $('<select><option value="">All</option></select>')
-              .appendTo($(column.header()).empty())
-              .on('change', function () {
-                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                column.search(val ? '^' + val + '$' : '', true, false).draw();
-              });
-            column.data().unique().sort().each(function (d, j) {
-              if (d) select.append('<option value="' + d + '">' + d + '</option>'); 
-            });
-          });
-        }
+    async function fetchLogbookData() {
+      const res = await fetch(scriptURL);
+      const data = await res.json();
+      const body = document.getElementById("logbookBody");
+      const teacherSet = new Set();
+
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        teacherSet.add(row[2]); // Assuming 3rd column is Teacher Name
+        body.appendChild(tr);
       });
-    })
-    .catch(error => console.error('Error loading data:', error));
-});
-</script>
+
+      // Populate teacher filter
+      const filter = document.getElementById('teacherFilter');
+      teacherSet.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        filter.appendChild(opt);
+      });
+    }
+
+    function filterTable() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const teacher = document.getElementById("teacherFilter").value;
+      const rows = document.getElementById("logbookBody").getElementsByTagName("tr");
+
+      for (let i = 0; i < rows.length; i++) {
+        const rowText = rows[i].textContent.toLowerCase();
+        const teacherCell = rows[i].cells[2].textContent; // Teacher’s Name
+
+        const matchesSearch = rowText.includes(search);
+        const matchesTeacher = teacher === "" || teacherCell === teacher;
+
+        rows[i].style.display = (matchesSearch && matchesTeacher) ? "" : "none";
+      }
+    }
+
+    function goToDashboard() {
+      window.location.href = 'admin.html'; // Change to your actual dashboard URL
+    }
+
+    fetchLogbookData();
+  </script>
 
 </body>
 </html>
