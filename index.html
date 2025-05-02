@@ -1,125 +1,110 @@
-<!-- index.html (Login Page) -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login - Alif Edu</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alif Edu Login</title>
   <style>
     body {
-      background: #0a1d3a;
-      font-family: Arial, sans-serif;
+      margin: 0;
+      background: navy;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
 
-    .login-card {
+    .card {
       background: white;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      border-radius: 15px;
+      box-shadow: 10px 10px 30px rgba(0,0,0,0.3);
+      padding: 40px 30px;
       width: 350px;
-      transform: perspective(1000px) rotateX(5deg);
+      text-align: center;
     }
 
-    .login-card h2 {
-      text-align: center;
+    .logo {
+      width: 80px;
       margin-bottom: 20px;
-      color: #0a1d3a;
     }
 
     input, select {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
     .btn {
-      width: 100%;
-      padding: 12px;
-      background-color: #ffcc00;
-      color: #0a1d3a;
+      background: goldenrod;
       border: none;
-      font-weight: bold;
-      border-radius: 10px;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: 0.3s;
+      margin-top: 10px;
     }
 
     .btn:hover {
-      background-color: #f4c10f;
+      background: darkgoldenrod;
     }
 
-    .logo {
-      display: block;
-      margin: 0 auto 20px auto;
-      width: 80px;
-    }
-
-    .error-msg {
-      color: red;
-      text-align: center;
+    .footer {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <div class="login-card">
-    <img src="your-logo-url.png" alt="Logo" class="logo">
-    <h2>Alif Edu Login</h2>
-    <input type="text" id="staffId" placeholder="Staff ID">
-    <input type="password" id="password" placeholder="Password">
+  <div class="card">
+    <img src="1.png" class="logo" alt="Alif Edu Logo">
+    <h2>Login</h2>
+    <input type="text" id="staffId" placeholder="Staff ID" required>
+    <input type="password" id="password" placeholder="Password" required>
     <select id="role">
-      <option value="Admin">Admin</option>
-      <option value="Principal">Principal</option>
-      <option value="Teacher">Teacher</option>
-      <option value="Mentor">Mentor</option>
+      <option value="admin">Admin</option>
+      <option value="principal">Principal</option>
+      <option value="teacher">Teacher</option>
+      <option value="mentor">Mentor</option>
     </select>
-    <button class="btn" onclick="login()">Login</button>
-    <p class="error-msg" id="errorMsg"></p>
+    <button class="btn" onclick="handleLogin()">Login</button>
+    <div class="footer">Powered by Alif Edu</div>
   </div>
 
   <script>
-    function login() {
+    async function handleLogin() {
       const staffId = document.getElementById("staffId").value;
       const password = document.getElementById("password").value;
       const role = document.getElementById("role").value;
-      const url = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec"; // Replace with your actual script URL
 
-      fetch(url, {
-        method: "POST",
-        body: new URLSearchParams({staffId, password, role})
-      })
-      .then(res => res.text())
-      .then(text => {
-        if (text.startsWith("success")) {
-          let role = text.split(":" )[1];
-          switch (role) {
-            case "Admin":
-              window.location.href = "admin.html";
-              break;
-            case "Principal":
-              window.location.href = "principal_dashboard.html";
-              break;
-            case "Teacher":
-              window.location.href = "dashboard.html";
-              break;
-            case "Mentor":
-              window.location.href = "mentor_dashboard.html";
-              break;
-            default:
-              document.getElementById("errorMsg").innerText = "Unknown role.";
-          }
-        } else {
-          document.getElementById("errorMsg").innerText = "Invalid login details.";
-        }
-      });
+      const url = `https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec?staffId=${encodeURIComponent(staffId)}&password=${encodeURIComponent(password)}&role=${role}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+     if (data.status === "success") {
+  if (role === "admin") {
+    window.location.href = "admin.html";
+  } else if (role === "principal") {
+    window.location.href = "admin.html";
+  } else if (role === "teacher") {
+    window.location.href = "dashboard.html";
+  } else if (role === "mentor") {
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Invalid role selected.");
+  }
+} else {
+  alert("Invalid ID or password.");
+}
+
     }
   </script>
-</body>
-</html>
-
-
 </body>
 </html>
