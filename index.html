@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alif Edu Login</title>
   <style>
     body {
@@ -80,7 +80,7 @@
 
   <div class="login-box">
     <img src="1.png" alt="Alif Edu Logo" />
-    <h2>Staff1 Login</h2>
+    <h2>Staff Login</h2>
 
     <input type="text" id="staffId" placeholder="Staff ID" />
     <input type="password" id="password" placeholder="Password" />
@@ -93,16 +93,21 @@
     </select>
 
     <button onclick="handleLogin()">Login</button>
-    <div class="error" id="errorMsg"></div>
 
-    <div class="footer">⚡ Powered by Alif Edu ⚡</div>
+    <div class="error" id="errorMsg"></div>
+    <div class="footer"> Powered by Alif Edu </div>
   </div>
 
   <script>
     function handleLogin() {
       const staffId = document.getElementById('staffId').value.trim();
       const password = document.getElementById('password').value.trim();
-      const role = document.getElementById('role').value.trim();
+      const role = document.getElementById('role').value;
+
+      if (!staffId || !password || !role) {
+        document.getElementById('errorMsg').innerText = "Please fill all fields.";
+        return;
+      }
 
       fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {
         method: 'POST',
@@ -121,8 +126,8 @@
         }
       })
       .catch(err => {
-        console.error('Login error:', err);
-        document.getElementById('errorMsg').innerText = "Server error. Please contact support.";
+        document.getElementById('errorMsg').innerText = "Error connecting to server.";
+        console.error("Login error:", err);
       });
     }
   </script>
