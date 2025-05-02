@@ -1,136 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alif Edu Login</title>
+  <title>Login - Alif Edu</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(145deg, #0a0f3c, #10194e);
+      background: #0a1d3a;
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: #fff;
     }
 
-    .login-box {
-      background: #0f1a4b;
-      border-radius: 20px;
-      box-shadow: 8px 8px 20px #080c26, -8px -8px 20px #162466;
+    .login-card {
+      background: white;
       padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
       width: 350px;
+      transform: perspective(1000px) rotateX(5deg);
+    }
+
+    .login-card h2 {
       text-align: center;
-    }
-
-    .login-box img {
-      width: 100px;
-      margin-bottom: 15px;
-    }
-
-    .login-box h2 {
-      margin-bottom: 25px;
-      color: #ffcc00;
+      margin-bottom: 20px;
+      color: #0a1d3a;
     }
 
     input, select {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: none;
+      border: 1px solid #ccc;
       border-radius: 10px;
-      background: #1a255f;
-      color: white;
-      font-size: 1rem;
-      box-shadow: inset 2px 2px 6px #0a0f3c, inset -2px -2px 6px #1e2b6e;
     }
 
-    button {
-      background-color: #ffcc00;
-      color: #0f1a4b;
+    .btn {
+      width: 100%;
       padding: 12px;
+      background-color: #ffcc00;
+      color: #0a1d3a;
       border: none;
+      font-weight: bold;
       border-radius: 10px;
       cursor: pointer;
-      width: 100%;
-      font-weight: bold;
-      transition: 0.3s ease;
-      margin-top: 10px;
+      transition: 0.3s;
     }
 
-    button:hover {
-      background-color: #e6b800;
+    .btn:hover {
+      background-color: #f4c10f;
     }
 
-    .footer {
-      margin-top: 20px;
-      font-size: 0.9rem;
-      color: #ccc;
+    .logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 80px;
     }
 
-    .error {
-      color: #ff6961;
-      margin-top: 10px;
+    .error-msg {
+      color: red;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-
-  <div class="login-box">
-    <img src="1.png" alt="Alif Edu Logo" />
-    <h2>Staff Login</h2>
-
-    <input type="text" id="staffId" placeholder="Staff ID" />
-    <input type="password" id="password" placeholder="Password" />
-
+  <div class="login-card">
+    <img src="1.png" alt="Logo" class="logo">
+    <h2>Alif Edu Login</h2>
+    <input type="text" id="staffId" placeholder="Staff ID">
+    <input type="password" id="password" placeholder="Password">
     <select id="role">
-      <option value="">Select Role</option>
       <option value="Admin">Admin</option>
-      <option value="Mentor">Mentor</option>
+      <option value="Principal">Principal</option>
       <option value="Teacher">Teacher</option>
+      <option value="Mentor">Mentor</option>
     </select>
-
-    <button onclick="handleLogin()">Login</button>
-
-    <div class="error" id="errorMsg"></div>
-    <div class="footer"> Powered by Alif Edu </div>
+    <button class="btn" onclick="login()">Login</button>
+    <p class="error-msg" id="errorMsg"></p>
   </div>
 
   <script>
-    function handleLogin() {
-      const staffId = document.getElementById('staffId').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const role = document.getElementById('role').value;
+    function login() {
+      const staffId = document.getElementById("staffId").value;
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+      const url = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec";
 
-      if (!staffId || !password || !role) {
-        document.getElementById('errorMsg').innerText = "Please fill all fields.";
-        return;
-      }
-
-      fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {
-        method: 'POST',
-        body: new URLSearchParams({
-          staffId,
-          password,
-          role
-        })
+      fetch(url, {
+        method: "POST",
+        body: new URLSearchParams({staffId, password, role})
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          window.location.href = data.redirectURL;
+      .then(res => res.text())
+      .then(text => {
+        if (text.startsWith("success")) {
+          let role = text.split(":")[1];
+          window.location.href = role.toLowerCase() + "_dashboard.html";
         } else {
-          document.getElementById('errorMsg').innerText = "Invalid credentials. Please try again.";
+          document.getElementById("errorMsg").innerText = "Invalid login details.";
         }
-      })
-      .catch(err => {
-        document.getElementById('errorMsg').innerText = "Error connecting to server.";
-        console.error("Login error:", err);
       });
     }
   </script>
-
 </body>
 </html>
