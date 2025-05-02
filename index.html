@@ -102,31 +102,26 @@
 
   <script>
     function handleLogin() {
-      const staffId = document.getElementById('staffId').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const role = document.getElementById('role').value;
-      const errorMsg = document.getElementById('errorMsg');
+      const staffId = document.getElementById('staffId').value;
+const password = document.getElementById('password').value;
+const role = document.getElementById('role').value;
 
-      if (!staffId || !password || !role) {
-        errorMsg.textContent = "Please fill in all fields.";
-        return;
-      }
-
-      // Replace with actual Apps Script Web App URL
-      const scriptURL = "https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec";
-
-      fetch(`${scriptURL}?staffId=${staffId}&password=${password}&role=${role}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = data.redirectURL;
-          } else {
-            errorMsg.textContent = "Invalid credentials. Please try again.";
-          }
-        })
-        .catch(() => {
-          errorMsg.textContent = "Error connecting to server.";
-        });
+fetch('https://script.google.com/macros/s/AKfycby51sQL3xo9pIqc7WO6-gUCQhCpkL0JN-4HclaAWbjaRsDrUCD4gD7zc47PVSfn9A8jgA/exec', {
+  method: 'POST',
+  body: new URLSearchParams({
+    staffId,
+    password,
+    role
+  })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.success) {
+    window.location.href = data.redirectURL;
+  } else {
+    alert("Invalid credentials. Please try again.");
+  }
+});
     }
   </script>
 
